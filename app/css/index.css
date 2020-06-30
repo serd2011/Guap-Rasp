@@ -30,6 +30,12 @@
 	--lesson-classroom: var(--color-pink);
 	--lesson-type: var(--color-black);
 	--lesson-box-shadow: var(--color-gray);
+	--settings-button-open: var(--color-dark-gray);
+	--settings-button-close: var(--color-gray);
+	--settings-background: var(--color-white);
+	--settings-background-background: var(--color-black);
+	--settings-title: var(--color-blue);
+	--setting-delimiter: var(--color-gray);
 }
 
 body.dark {
@@ -82,6 +88,9 @@ body {
 	background-color: var(--body-background);
 	display: none;
 	color: var(--text-default);
+	position: relative;
+	height: max-content;
+	min-height: 100vh;
 }
 
 body.shown {
@@ -100,16 +109,8 @@ body.shown {
 	height: 100%;
 	top: 0;
 	left: 0;
-	z-index: 1000;
-	background-color: #74438d;
-	/* IE9, iOS 3.2+ */
-	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0idnNnZyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSItMi45JSIgeTE9IjUuMSUiIHgyPSIxMDIuOSUiIHkyPSI5NC45JSI+PHN0b3Agc3RvcC1jb2xvcj0iIzAwNWFhYSIgc3RvcC1vcGFjaXR5PSIxIiBvZmZzZXQ9IjAuMiIvPjxzdG9wIHN0b3AtY29sb3I9IiNlNzJiNzAiIHN0b3Atb3BhY2l0eT0iMSIgb2Zmc2V0PSIwLjgiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjdnNnZykiIC8+PC9zdmc+);
-	background-image: -webkit-gradient(linear, -2.9% 5.1%, 102.9% 94.9%, color-stop(0.2, rgb(0, 90, 170)), color-stop(0.8, rgb(231, 43, 112)));
-	/* Android 2.3 */
-	background-image: -webkit-linear-gradient(320deg, rgb(0, 90, 170) 20%, rgb(231, 43, 112) 80%);
-	/* IE10+ */
+	z-index: 10000;
 	background-image: linear-gradient(130deg, rgb(0, 90, 170) 20%, rgb(231, 43, 112) 80%);
-	background-image: -ms-linear-gradient(320deg, rgb(0, 90, 170) 20%, rgb(231, 43, 112) 80%);
 }
 
 /*основа*/
@@ -123,17 +124,17 @@ body.shown {
 	max-width: 1920px;
 	margin: auto;
 	padding-bottom: 5px;
+	height: max-content;
 }
 
 @media(max-height:1080px) {
 	.grid {
-		height: 100vh;
+		min-height: 100vh;
 	}
 }
 
 @media(min-height:1080px) {
 	.grid {
-		height: max-content;
 		min-height: 1080px;
 	}
 }

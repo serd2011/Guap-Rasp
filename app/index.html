@@ -2,14 +2,41 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="google" content="notranslate">
     <meta http-equiv="Content-Language" content="ru">
+
     <link href="css/index.css" rel="stylesheet">
+    <link href="css/settings.css" rel="stylesheet">
+
     <script src="js/jquery-3.5.1.min.js"></script>
-    <script src="js/index.js"></script>
+
+    <script src="js/index.js" defer></script>
 </head>
 
 <body>
+    <div id="settings-background"></div>
+    <div class="settings-wrapper">
+        <div class="settings-button-open-wrapper">
+            <svg id="settings-button-open">
+                <use xlink:href="img/settings.svg#gear"></use>
+            </svg>
+        </div>
+        <div id="settings-block">
+            <div class="settings-block-header">
+                <svg id="settings-button-close">
+                    <use xlink:href=" img/close.svg#cross">
+                    </use>
+                </svg>
+                <span>Настройки</span>
+            </div>
+            <div class="setting">
+                <span>Тема</span>
+                <select data-role="control" data-name="theme" data-type="sync">
+                    <option value="light">Светлая</option>
+                    <option value="dark">Темная</option>
+                </select>
+            </div>
+        </div>
+    </div>
     <div class="grid">
         <div class="header_background"></div>
         <header>
