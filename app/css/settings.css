@@ -12,7 +12,7 @@
 }
 
 #settings-background.shown {
-    opacity: 0.6;
+    opacity: 0.5;
     visibility: visible;
 }
 
@@ -33,7 +33,7 @@
     padding-top: 0;
     background-color: var(--settings-background);
     left: 100%;
-    transition: left 0.2s linear;
+    transition: left 0.3s ease-in-out;
     pointer-events: all;
     min-width: 300px;
 }
@@ -60,6 +60,19 @@
     cursor: pointer;
     fill: var(--settings-button-open);
     pointer-events: all;
+}
+
+#settings-button-open:hover {
+    animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 #settings-button-close {
@@ -106,4 +119,8 @@
 
 .setting>span {
     flex: 1;
+}
+
+#settings-block>.preloader {
+    top: 50px;
 }

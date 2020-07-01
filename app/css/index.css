@@ -74,6 +74,12 @@ body.dark {
 	--lesson-classroom: var(--color-pink);
 	--lesson-type: var(--color-white);
 	--lesson-box-shadow: var(--color-dark-dark);
+	--settings-button-open: var(--color-dark-dark);
+	--settings-button-close: var(--color-dark);
+	--settings-background: var(--color-background);
+	--settings-background-background: var(--color-black);
+	--settings-title: var(--color-blue);
+	--setting-delimiter: var(--color-dark-dark);
 }
 
 * {
@@ -86,15 +92,10 @@ body.dark {
 body {
 	min-width: 1200px;
 	background-color: var(--body-background);
-	display: none;
 	color: var(--text-default);
 	position: relative;
 	height: max-content;
 	min-height: 100vh;
-}
-
-body.shown {
-	display: block;
 }
 
 .display_none {
@@ -524,7 +525,7 @@ article>div {
 	margin-bottom: 10px;
 }
 
-label {
+.switch label {
 	display: block;
 	left: 0px;
 	top: 0;
@@ -534,11 +535,10 @@ label {
 	z-index: 10;
 	line-height: 30px;
 	background: var(--aside-block-border);
-	transition: all 0.2s linear;
 	cursor: pointer;
 }
 
-label:after {
+.switch label:after {
 	content: "Нижняя";
 	width: 100px;
 	height: 30px;
@@ -554,15 +554,15 @@ label:after {
 	font-size: 14px;
 }
 
-#checkbox {
+.switch #checkbox {
 	display: none;
 }
 
-:checked+label {
+.switch #checkbox:checked+label {
 	left: 0px;
 }
 
-:checked+label:after {
+.switch #checkbox:checked+label:after {
 	left: 90px;
 	background: var(--button-active);
 	content: "Верхняя";

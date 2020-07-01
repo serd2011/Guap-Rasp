@@ -6,8 +6,6 @@ let additional_lessons_but;
 let additional_inf;
 let additional_lessons;
 
-let settings = {};
-
 $(document).ready(ready);
 
 $.ajax({
@@ -20,10 +18,10 @@ $.ajax({
 
 function ready() {
 	page_prepair();
+	settings_prepair();
 	chrome.storage.sync.get(null, function () {
 
 	});
-	$("body").addClass("shown");
 }
 
 function page_prepair() {
@@ -45,14 +43,46 @@ function page_prepair() {
 	$("#settings-block *[data-role='control']").each(function () {
 		$(this).change(setting_changed);
 	});
+}
 
-	chrome.storage.sync.get(["theme"], function (result) {
-		switch (result.theme) {
-			case "dark":
-				$("body").addClass("dark");
-				break;
-		}
+let settings = {};
+
+function settings_prepair() {
+
+	let temp = { "local": [], "sync": [] };
+
+	$("#settings-block *[data-role='control']").each(function () {
+		temp[$(this).data("type")].push($(this).data("name"));
 	});
+
+	//Пока только синк
+	if (temp.sync.length)
+		chrome.storage.sync.get(temp.sync, use_settings);
+
+	function use_settings(data) {
+		settings = data;
+		set_settings_controls();
+		apply_settings();
+	}
+
+	function set_settings_controls() {
+		$("#settings-block *[data-role='control']").each(function () {
+			set_control_value(this, settings[$(this).data("name")]);
+		});
+		$("#settings-block > .preloader").remove();
+	}
+
+}
+
+function apply_settings() {
+	switch (settings.theme) {
+		case "light":
+			$("body").removeClass("dark");
+			break;
+		case "dark":
+			$("body").addClass("dark");
+			break;
+	}
 }
 
 function day_change() {
@@ -87,5 +117,41 @@ function settings_close() {
 
 function setting_changed() {
 	if ($(this).data("type") == "sync")
-		chrome.storage.sync.set({ [$(this).data("name")]: $(this).val() });
+		chrome.storage.sync.set({ [$(this).data("name")]: get_control_value(this) });
+}
+
+chrome.storage.onChanged.addListener(function (changes) {
+	for (var key in changes) {
+		settings[key] = changes[key].newValue;
+	}
+	apply_settings();
+});
+
+function get_control_value(control) {
+	switch (control.nodeName) {
+		case "INPUT":
+			switch ($(control).attr('type')) {
+				case "checkbox":
+					return control.checked;
+			}
+			return $(control).val();
+		default:
+			return $(control).val();
+	}
+}
+
+function set_control_value(control, value) {
+	switch (control.nodeName) {
+		case "INPUT":
+			switch ($(control).attr('type')) {
+				case "checkbox":
+					control.checked = value;
+					break;
+			}
+			$(control).val(value);
+			break;
+		default:
+			$(control).val(value);
+			break;
+	}
 }
