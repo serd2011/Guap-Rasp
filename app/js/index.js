@@ -6,20 +6,14 @@ let additional_lessons_but;
 let additional_inf;
 let additional_lessons;
 
-$(document).ready(ready);
+let groups = {};
+let preps = {};
 
-$.ajax({
-	url: "https://api.guap.ru/rasp/custom/get-sem-info",
-}).done(function (data) {
-	console.log(data);
-	set_as_loaded("info");
-}).fail(function () {
-	console.log("error");
-});
+$(document).ready(ready);
 
 let is_loaded = { "settings": false, "info": false, "timeout": false };
 
-setTimeout(set_as_loaded, 3000, "timeout");
+setTimeout(set_as_loaded, 1000, "timeout");
 
 function set_as_loaded(type) {
 	is_loaded[type] = true;
@@ -38,6 +32,7 @@ function set_as_loaded(type) {
 function ready() {
 	page_prepair();
 	settings_prepair();
+	info_prepair();
 }
 
 function page_prepair() {
@@ -79,7 +74,7 @@ function settings_prepair() {
 		settings = data;
 		set_settings_controls();
 		apply_settings();
-		set_as_loaded("settings")
+		set_as_loaded("settings");
 	}
 
 	function set_settings_controls() {
@@ -138,7 +133,7 @@ function setting_changed() {
 }
 
 chrome.storage.onChanged.addListener(function (changes) {
-	for (var key in changes) {
+	for (let key in changes) {
 		settings[key] = changes[key].newValue;
 	}
 	apply_settings();
@@ -173,15 +168,7 @@ function set_control_value(control, value) {
 	}
 }
 
-function getWeekNumber(d) {
-	d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-	d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-	var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-	var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-	return weekNo;
-}
-
-function changeDate() {
+function changeDate(is_week_em) {
 	var days = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
 	var months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабрь'];
 	var current_datetime = new Date();
@@ -189,18 +176,98 @@ function changeDate() {
 	var date = current_datetime.getDate();
 	var month = months[current_datetime.getMonth()];
 	var year = current_datetime.getFullYear();
-	if (getWeekNumber(current_datetime) % 2 == 0) {
+	if (is_week_em) {
 		$(".date").addClass("em");
 		$("#checkbox").prop('checked', true);
-		day_change();
-		return "▲ " + week + ", " + date + " " + month + " " + year + " года";
+		$('.date').text("▲ " + week + ", " + date + " " + month + " " + year + " года");
+	} else {
+		$(".date").addClass("dn");
+		$("#checkbox").prop('checked', false);
+		$('.date').text("▼ " + week + ", " + date + " " + month + " " + year + " года");
 	}
-	$("#checkbox").prop('checked', false);
-	$(".date").addClass("dn");
 	day_change();
-	return "▼ " + week + ", " + date + " " + month + " " + year + " года";
 }
 
-$(document).ready(function () {
-	$('.date').text(changeDate);
-});
+//chrome.storage.local.set({ "lastUpdate": "" }); //ТЕСТ
+
+function info_prepair() {
+	$.ajax({
+		url: "https://api.guap.ru/rasp/custom/get-sem-info",
+	}).done(initial_data_received).fail(function () {
+		display_error("Ошибка получения превичных данных");
+	});
+
+	function initial_data_received(data) {
+		changeDate(data.IsWeekUp);
+		chrome.storage.local.get("lastUpdate", function (d) {
+			if (d.lastUpdate == data.Update) {
+				chrome.storage.local.get("groups", function (data) {
+					group_data_received(data, true);
+				});
+			} else {
+				chrome.storage.local.set({ "lastUpdate": data.Update });
+				$.ajax({
+					url: "https://api.guap.ru/rasp/custom/get-sem-groups",
+				}).done(function (data) {
+					group_data_received(data, false);
+				}).fail(function () {
+					chrome.storage.local.set({ "lastUpdate": "" });
+					display_error("Ошибка получения данных группы");
+				});
+			}
+		});
+	}
+
+	function group_data_received(data, is_local = false) {
+
+		if (!is_local) {
+			for (let i in data) {
+				groups[data[i].Name] = data[i].ItemId;
+			}
+		} else {
+			groups = data.groups;
+		}
+		for (let group in groups) {
+			$("#group_num").append($("<option>").text(group));
+		}
+
+		//Получение преподавателей
+		if (is_local) {
+			chrome.storage.local.get("preps", function (data) {
+				preps_data_received(data, true);
+			});
+		} else {
+			$.ajax({
+				url: "https://api.guap.ru/rasp/custom/get-sem-preps",
+			}).done(function (data) { preps_data_received(data, false); }).fail(function () {
+				chrome.storage.local.set({ "lastUpdate": "" });
+				display_error("Ошибка получения данных группы");
+			});
+			chrome.storage.local.set({ "groups": groups });
+		}
+	}
+
+	function preps_data_received(data, is_local = false) {
+		if (!is_local) {
+			for (let i in data) {
+				preps[data[i].Name] = data[i].ItemId;
+			}
+		} else {
+			preps = data.preps;
+		}
+		for (let prep in preps) {
+			$("#preps").append($("<option>").text(prep));
+		}
+
+		if (!is_local) {
+			chrome.storage.local.set({ "preps": preps });
+		}
+		set_as_loaded("info");
+	}
+}
+
+
+function display_error(text) {
+	//Реализовать нормальное отображение
+	console.log("Произошла ошибка\n" + text);
+}

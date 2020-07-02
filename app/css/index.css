@@ -260,6 +260,7 @@ aside {
 	border: none;
 	background-color: var(--button-background);
 	color: var(--button-text);
+	cursor: pointer;
 }
 
 .but:active {
