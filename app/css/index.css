@@ -37,7 +37,7 @@
 	--settings-title: var(--color-blue);
 	--setting-delimiter: var(--color-gray);
 	--settings-button-open-hover: var(--color-blue);
-	--settings-button-close-hover: var(--color-dark-gray);
+	--settings-button-close-hover: var(--color-pink);
 }
 
 body.dark {
