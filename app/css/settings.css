@@ -65,6 +65,7 @@
 
 #settings-button-open:hover {
     animation: rotate 2s linear infinite;
+    fill: var(--color-white);
 }
 
 @keyframes rotate {
@@ -90,7 +91,7 @@
 
 #settings-button-close:hover{
     transform: scale(1.1);
-    fill: var(--color-black);
+    fill: var(--color-white);
 }
 
 .settings-block-header {
