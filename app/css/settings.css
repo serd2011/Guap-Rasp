@@ -60,6 +60,7 @@
     cursor: pointer;
     fill: var(--settings-button-open);
     pointer-events: all;
+    transition: all 0.3s;
 }
 
 #settings-button-open:hover {
@@ -84,6 +85,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: all 0.3s;
+}
+
+#settings-button-close:hover{
+    transform: scale(1.1);
+    fill: var(--color-black);
 }
 
 .settings-block-header {
