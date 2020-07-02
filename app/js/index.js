@@ -155,3 +155,35 @@ function set_control_value(control, value) {
 			break;
 	}
 }
+
+function getWeekNumber(d) {
+	d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+	d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+	var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+	var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+	return weekNo;
+}
+
+function changeDate(){
+	var days = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+	var months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабрь'];
+	var current_datetime = new Date();
+	var week = days[current_datetime.getDay()];
+	var date = current_datetime.getDate();
+	var month = months[current_datetime.getMonth()];
+	var year = current_datetime.getFullYear();
+	if(getWeekNumber(current_datetime) % 2 == 0){
+		$(".date").addClass("em");
+		$("#checkbox").prop('checked',true);
+		day_change();
+		return "▲ "+week+", "+date+" "+month+" "+year+" года";
+	}
+	$("#checkbox").prop('checked',false);
+	$(".date").addClass("dn");
+	day_change();
+	return "▼ "+week+", "+date+" "+month+" "+year+" года";
+}
+
+$(document).ready(function(){
+	$('.date').text(changeDate);
+});
