@@ -12,9 +12,28 @@ $.ajax({
 	url: "https://api.guap.ru/rasp/custom/get-sem-info",
 }).done(function (data) {
 	console.log(data);
+	set_as_loaded("info");
 }).fail(function () {
 	console.log("error");
 });
+
+let is_loaded = { "settings": false, "info": false, "timeout": false };
+
+setTimeout(set_as_loaded, 3000, "timeout");
+
+function set_as_loaded(type) {
+	is_loaded[type] = true;
+
+	if (is_all_true(is_loaded)) {
+		$("#main-preloader").animate({ opacity: 0 }, 400, function () { $(this).remove(); });
+	}
+
+	function is_all_true(obj) {
+		for (var o in obj)
+			if (!obj[o]) return false;
+		return true;
+	}
+}
 
 function ready() {
 	page_prepair();
@@ -60,6 +79,7 @@ function settings_prepair() {
 		settings = data;
 		set_settings_controls();
 		apply_settings();
+		set_as_loaded("settings")
 	}
 
 	function set_settings_controls() {

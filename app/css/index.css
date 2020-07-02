@@ -38,6 +38,10 @@
 	--setting-delimiter: var(--color-gray);
 	--settings-button-open-hover: var(--color-blue);
 	--settings-button-close-hover: var(--color-pink);
+	/*Прелоадер*/
+	--main-preloader-vignette: var(--color-black);
+	--main-preloader-top-left-background: var(--color-blue);
+	--main-preloader-bottom-right-background: var(--color-pink);
 }
 
 body.dark {
@@ -108,14 +112,35 @@ body {
 
 /*прелоадер*/
 
-.preloader {
+#main-preloader {
 	position: absolute;
 	width: 100%;
 	height: 100%;
 	top: 0;
 	left: 0;
 	z-index: 10000;
-	background-image: linear-gradient(130deg, rgb(0, 90, 170) 20%, rgb(231, 43, 112) 80%);
+	background-image: radial-gradient( circle, transparent 50%, var(--main-preloader-vignette) 150%), linear-gradient(130deg, var(--main-preloader-top-left-background) 20%, var(--main-preloader-bottom-right-background) 80%);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#main-preloader img {
+	width: 30%;
+	opacity: 1;
+	animation: opacity-change 3s linear infinite;
+}
+
+@keyframes opacity-change {
+	from {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.1;
+	}
+	to {
+		opacity: 1;
+	}
 }
 
 /*основа*/
