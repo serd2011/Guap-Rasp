@@ -153,6 +153,7 @@ function get_control_value(control) {
 }
 
 function set_control_value(control, value) {
+	if (value == undefined) return;
 	switch (control.nodeName) {
 		case "INPUT":
 			switch ($(control).attr('type')) {
