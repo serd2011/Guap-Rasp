@@ -18,5 +18,12 @@
 	"web_accessible_resources": [
 		"app/index.html"
 	],
-	"browser_action": {}
+	"browser_action": {},
+	"icons": {
+		"16": "img/icon-16.png",
+		"32": "img/icon-32.png",
+		"64": "img/icon-64.png",
+		"128": "img/icon-128.png",
+		"256": "img/icon-256.png"
+	}
 }
