@@ -392,7 +392,8 @@ aside select {
 	position: absolute;
 	width: 80px;
 	height: 80px;
-	background-image: url("../img/1.png");
+	background-color: var(--aside-background);
+	background-image: url("../img/lessons/6.png");
 	background-size: contain;
 	border-radius: 50%;
 }
