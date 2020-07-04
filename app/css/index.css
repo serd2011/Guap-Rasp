@@ -38,6 +38,7 @@
 	--setting-delimiter: var(--color-gray);
 	--settings-button-open-hover: var(--color-blue);
 	--settings-button-close-hover: var(--color-pink);
+	--preloader-fill: var(--color-blue);
 	/*Прелоадер*/
 	--main-preloader-vignette: var(--color-black);
 	--main-preloader-top-left-background: var(--color-blue);
@@ -53,7 +54,7 @@ body.dark {
 	--color-white: #ccc;
 	--color-border: #414141;
 	--color-blue: #3589D4;
-	--color-dark_blue: #005aaa;
+	--color-dark-blue: #005aaa;
 	--color-pink: #ff4c8e;
 	--color-dark-pink: #e72b70;
 	--text-default: var(--color-white);
@@ -64,7 +65,7 @@ body.dark {
 	--text-date-dn: var(--color-blue);
 	--text-date-em: var(--color-pink);
 	--aside-block-border: var(--color-dark);
-	--button-background: var(--color-dark_blue);
+	--button-background: var(--color-dark-blue);
 	--button-active: var(--color-dark-pink);
 	--button-text: var(--color-white);
 	--search-input-background: var(--color-dark);
@@ -88,6 +89,7 @@ body.dark {
 	--setting-delimiter: var(--color-dark-dark);
 	--settings-button-open-hover: var(--color-white);
 	--settings-button-close-hover: var(--color-dark-pink);
+	--preloader-fill: var(--color-dark-blue);
 }
 
 * {
@@ -112,23 +114,39 @@ body {
 
 /*прелоадер*/
 
-#main-preloader {
+.preloader {
 	position: absolute;
 	width: 100%;
 	height: 100%;
 	top: 0;
 	left: 0;
-	z-index: 10000;
-	background-image: radial-gradient( circle, transparent 50%, var(--main-preloader-vignette) 150%), linear-gradient(130deg, var(--main-preloader-top-left-background) 20%, var(--main-preloader-bottom-right-background) 80%);
+	z-index: 500;
+	background-color: inherit;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 
+.preloader>svg {
+	width: 50%;
+	height: 100%;
+	fill: var(--preloader-fill);
+}
+
+.preloader>svg>* {
+	transform-origin: center center;
+	animation: preloader-rotate 2s linear infinite;
+}
+
+#main-preloader {
+	z-index: 10000;
+	background-image: radial-gradient( circle, transparent 50%, var(--main-preloader-vignette) 150%), linear-gradient(130deg, var(--main-preloader-top-left-background) 20%, var(--main-preloader-bottom-right-background) 80%);
+}
+
 #main-preloader img {
 	width: 30%;
 	opacity: 1;
-	animation: opacity-change 3s linear infinite;
+	animation: opacity-change 3s linear 0.5s infinite;
 }
 
 @keyframes opacity-change {
@@ -140,6 +158,15 @@ body {
 	}
 	to {
 		opacity: 1;
+	}
+}
+
+@keyframes preloader-rotate {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
 	}
 }
 
@@ -205,6 +232,7 @@ header div {
 /*Сайдбар*/
 
 aside {
+	position: relative;
 	background-color: var(--aside-background);
 	grid-area: aside;
 	margin-left: 5px;
@@ -458,6 +486,7 @@ aside select {
 /*Осн. Контент*/
 
 article {
+	position: relative;
 	background-color: var(--article-background);
 	grid-area: article;
 	display: grid;
@@ -546,6 +575,14 @@ article>div {
 	font-size: 11px;
 	text-align: left;
 	color: var(--lesson-classroom);
+}
+
+article .preloader {
+	background-color: transparent;
+}
+
+article .preloader>svg {
+	width: 20%;
 }
 
 /*Переключатель*/

@@ -11,9 +11,9 @@ let preps = {};
 
 $(document).ready(ready);
 
-let is_loaded = { "settings": false, "info": false, "timeout": false };
+let is_loaded = { "settings": false, "timeout": false };
 
-setTimeout(set_as_loaded, 1000, "timeout");
+setTimeout(set_as_loaded, 500, "timeout");
 
 function set_as_loaded(type) {
 	is_loaded[type] = true;
@@ -192,6 +192,7 @@ function changeDate(is_week_em) {
 //chrome.storage.local.set({ "lastUpdate": "" }); //ТЕСТ
 
 function info_prepair() {
+	let preloader = new Preloader($("aside"));
 	$.ajax({
 		url: "https://api.guap.ru/rasp/custom/get-sem-info",
 	}).done(initial_data_received).fail(function () {
@@ -263,7 +264,7 @@ function info_prepair() {
 		if (!is_local) {
 			chrome.storage.local.set({ "preps": preps });
 		}
-		set_as_loaded("info");
+		preloader.close();
 	}
 }
 
@@ -271,4 +272,13 @@ function info_prepair() {
 function display_error(text) {
 	//Реализовать нормальное отображение
 	console.log("Произошла ошибка\n" + text);
+}
+
+class Preloader {
+	constructor($wrapper) {
+		this.preloader = $("<div>", { "class": "preloader" }).load('./img/preloader.svg').appendTo($wrapper);
+	}
+	close() {
+		this.preloader.animate({ opacity: 0 }, 200, function () { $(this).remove(); });
+	}
 }
