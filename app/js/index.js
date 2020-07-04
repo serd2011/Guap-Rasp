@@ -189,14 +189,12 @@ function changeDate(is_week_em) {
 	day_change();
 }
 
-//chrome.storage.local.set({ "lastUpdate": "" }); //ТЕСТ
-
 function info_prepair() {
 	let preloader = new Preloader($("aside"));
 	$.ajax({
 		url: "https://api.guap.ru/rasp/custom/get-sem-info",
 	}).done(initial_data_received).fail(function () {
-		display_error("Ошибка получения превичных данных");
+		Error.showError("Не удается получить превичные данные");
 	});
 
 	function initial_data_received(data) {
@@ -214,7 +212,7 @@ function info_prepair() {
 					group_data_received(data, false);
 				}).fail(function () {
 					chrome.storage.local.set({ "lastUpdate": "" });
-					display_error("Ошибка получения данных группы");
+					Error.showError("Не удается получить данные группы");
 				});
 			}
 		});
@@ -243,7 +241,7 @@ function info_prepair() {
 				url: "https://api.guap.ru/rasp/custom/get-sem-preps",
 			}).done(function (data) { preps_data_received(data, false); }).fail(function () {
 				chrome.storage.local.set({ "lastUpdate": "" });
-				display_error("Ошибка получения данных группы");
+				Error.showError("Не удается получить данные группы");
 			});
 			chrome.storage.local.set({ "groups": groups });
 		}
@@ -266,12 +264,6 @@ function info_prepair() {
 		}
 		preloader.close();
 	}
-}
-
-
-function display_error(text) {
-	//Реализовать нормальное отображение
-	console.log("Произошла ошибка\n" + text);
 }
 
 class Preloader {
