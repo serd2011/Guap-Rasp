@@ -1,0 +1,35 @@
+.error {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #ff0000dd;
+    color: #fff;
+    padding: 5px;
+    z-index: 10000;
+    border-bottom-right-radius: 10px;
+    box-shadow: 0 0 5px #000;
+}
+
+.preloader {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 500;
+    background-color: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.preloader>svg {
+    width: 50%;
+    height: 100%;
+    fill: var(--preloader-fill);
+}
+
+.preloader>svg>* {
+    transform-origin: center center;
+    animation: preloader-rotate 2s linear infinite;
+}

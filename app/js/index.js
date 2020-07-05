@@ -10,21 +10,26 @@ let groups_input;
 let preps_input;
 let show_button;
 
-let is_loaded = { "settings": false, "timeout": false };
-
+/** Текущие настройки */
 let settings = {};
 
+/** Список групп | группа => id */
 let groups = {};
+/** Список преподавателей | имя => id */
 let preps = {};
-
+/** Расписание | id => занятие */
 let timetable = {};
 
-setTimeout(set_as_loaded, 500, "timeout");
+setTimeout(module_loaded, 500, "timeout");
 
-function set_as_loaded(type) {
-	is_loaded[type] = true;
+/**
+ * Сообщает о загруженном модуле
+ * @param {string} name 
+ */
+function module_loaded(name) {
+	module_loaded.modules[name] = true;
 
-	if (is_all_true(is_loaded)) {
+	if (is_all_true(module_loaded.modules)) {
 		$("#main-preloader").animate({ opacity: 0 }, 400, function () { $(this).remove(); });
 	}
 
@@ -34,6 +39,7 @@ function set_as_loaded(type) {
 		return true;
 	}
 }
+module_loaded.modules = { "settings": false, "timeout": false };
 
 function ready() {
 	page_prepair();
@@ -67,9 +73,14 @@ function page_prepair() {
 
 	groups_input.change(check_input_value);
 	preps_input.change(check_input_value);
+	groups_input.on('keypress', function (e) {
+		if (e.which === 13) show_timetable();
+	});
+	preps_input.on('keypress', function (e) {
+		if (e.which === 13) show_timetable();
+	});
 
 	function check_input_value() {
-
 		preps_input.attr("disabled", false);
 		groups_input.attr("disabled", false);
 		if (groups_input.val() != "") {
@@ -103,7 +114,7 @@ function settings_prepair() {
 		settings = data;
 		set_settings_controls();
 		apply_settings();
-		set_as_loaded("settings");
+		module_loaded("settings");
 	}
 
 	function set_settings_controls() {
@@ -223,7 +234,7 @@ function info_prepair() {
 	$.ajax({
 		url: "https://api.guap.ru/rasp/custom/get-sem-info",
 	}).done(initial_data_received).fail(function () {
-		Error.showError("Не удается получить превичные данные");
+		Notify.show("Не удается получить превичные данные");
 	});
 
 	function initial_data_received(data) {
@@ -241,7 +252,7 @@ function info_prepair() {
 					group_data_received(data, false);
 				}).fail(function () {
 					chrome.storage.local.set({ "lastUpdate": "" });
-					Error.showError("Не удается получить данные группы");
+					Notify.show("Не удается получить данные группы");
 				});
 			}
 		});
@@ -270,7 +281,7 @@ function info_prepair() {
 				url: "https://api.guap.ru/rasp/custom/get-sem-preps",
 			}).done(function (data) { preps_data_received(data, false); }).fail(function () {
 				chrome.storage.local.set({ "lastUpdate": "" });
-				Error.showError("Не удается получить данные группы");
+				Notify.show("Не удается получить данные группы");
 			});
 			chrome.storage.local.set({ "groups": groups });
 		}
@@ -356,18 +367,6 @@ function show_timetable() {
 	function load_error() {
 		preloader.close();
 		show_button.attr("disabled", false);
-		Error.showError("Не удается получить расписание");
-	}
-}
-
-class Preloader {
-	constructor($wrapper) {
-		if (Preloader.preloader_content == undefined)
-			this.preloader = $("<div>", { "class": "preloader" }).load('./img/preloader.svg', function (data) { Preloader.preloader_content = data; }).appendTo($wrapper);
-		else
-			this.preloader = $("<div>", { "class": "preloader" }).html(Preloader.preloader_content).appendTo($wrapper);
-	}
-	close() {
-		this.preloader.animate({ opacity: 0 }, 200, function () { $(this).remove(); });
+		Notify.show("Не удается получить расписание");
 	}
 }

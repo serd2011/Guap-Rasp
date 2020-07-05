@@ -122,30 +122,6 @@ body {
 
 /*прелоадер*/
 
-.preloader {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-	z-index: 500;
-	background-color: inherit;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-.preloader>svg {
-	width: 50%;
-	height: 100%;
-	fill: var(--preloader-fill);
-}
-
-.preloader>svg>* {
-	transform-origin: center center;
-	animation: preloader-rotate 2s linear infinite;
-}
-
 #main-preloader {
 	z-index: 10000;
 	background-image: radial-gradient( circle, transparent 50%, var(--main-preloader-vignette) 150%), linear-gradient(130deg, var(--main-preloader-top-left-background) 20%, var(--main-preloader-bottom-right-background) 80%);
