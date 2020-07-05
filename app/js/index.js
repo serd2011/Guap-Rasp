@@ -1,17 +1,23 @@
 "use strict";
 
+$(document).ready(ready);
+
 let article;
 let day_switch;
-let additional_lessons_but;
 let additional_inf;
 let additional_lessons;
+let groups_input;
+let preps_input;
+let show_button;
+
+let is_loaded = { "settings": false, "timeout": false };
+
+let settings = {};
 
 let groups = {};
 let preps = {};
 
-$(document).ready(ready);
-
-let is_loaded = { "settings": false, "timeout": false };
+let timetable = {};
 
 setTimeout(set_as_loaded, 500, "timeout");
 
@@ -38,9 +44,10 @@ function ready() {
 function page_prepair() {
 	article = document.getElementsByTagName("article")[0];
 	day_switch = document.getElementById("checkbox");
-	additional_lessons_but = document.getElementsByClassName("but_additional_lessons")[0];
+	let additional_lessons_but = document.getElementsByClassName("but_additional_lessons")[0];
 	additional_inf = document.getElementsByClassName("additional_inf")[0];
-	additional_lessons = document.getElementsByClassName("additional_lessons")[0];
+	additional_lessons = $(".additional_lessons");
+	show_button = $("#timetable-show-but");
 
 
 	day_switch.addEventListener("change", day_change, true);
@@ -54,9 +61,31 @@ function page_prepair() {
 	$("#settings-block *[data-role='control']").each(function () {
 		$(this).change(setting_changed);
 	});
-}
 
-let settings = {};
+	groups_input = $("#groups_input");
+	preps_input = $("#preps_input");
+
+	groups_input.change(check_input_value);
+	preps_input.change(check_input_value);
+
+	function check_input_value() {
+
+		preps_input.attr("disabled", false);
+		groups_input.attr("disabled", false);
+		if (groups_input.val() != "") {
+			preps_input.attr("disabled", true);
+		} else if (preps_input.val() != "")
+			groups_input.attr("disabled", true);
+
+		show_button.attr("disabled", true);
+		if (groups_input.val() in groups)
+			show_button.attr("disabled", false);
+		if (preps_input.val() in preps)
+			show_button.attr("disabled", false);
+	}
+
+	$("#timetable-show-but").click(show_timetable);
+}
 
 function settings_prepair() {
 
@@ -110,10 +139,10 @@ function day_change() {
 function additional_lessons_but_click() {
 	if (additional_inf.classList.contains("display_none")) {
 		additional_inf.classList.remove("display_none");
-		additional_lessons.classList.add("display_none");
+		additional_lessons.addClass("display_none");
 	} else {
 		additional_inf.classList.add("display_none");
-		additional_lessons.classList.remove("display_none");
+		additional_lessons.removeClass("display_none");
 	}
 }
 
@@ -266,9 +295,77 @@ function info_prepair() {
 	}
 }
 
+function show_timetable() {
+	show_button.attr("disabled", true);
+	let preloader = new Preloader($("article"));
+	$(".column > div:not(.day_name)").remove();
+	additional_lessons.empty();
+
+	if (groups_input.val() in groups)
+		$.ajax({
+			url: "https://api.guap.ru/rasp/custom/get-sem-rasp/group" + groups[groups_input.val()],
+		}).done(rasp_received).fail(load_error);
+	else if (preps_input.val() in preps)
+		$.ajax({
+			url: "https://api.guap.ru/rasp/custom/get-sem-rasp/prep" + preps[preps_input.val()],
+		}).done(rasp_received).fail(load_error);
+	else {
+		groups_input.val("");
+		preps_input.val("");
+		show_button.attr("disabled", false);
+		preloader.close();
+	}
+
+	function rasp_received(data) {
+		let pairs_time = ["", "1 пара (09:00-10:30)", "2 пара (10:40-12:10)", "3 пара (12:20-13:50)", "4 пара (14:10-15:40)", "5 пара (15:50-17:20)", "6 пара (17:30-19:00)", "7 пара (19:10-20:30)", "8 пара (20:40-22:00)"];
+		timetable = {};
+
+		data.sort(function (a, b) {
+			return parseFloat(a.Less) - parseFloat(b.Less);
+		});
+
+		for (let i in data) {
+			timetable[data[i].ItemId] = data[i];
+			if (data[i].Day == 0) {
+				console.log(data[i]);
+				additional_lessons.append(
+					$("<div>", { "data-lesson": data[i].ItemId }).append(
+						$("<div>", { "class": "type" }).text(data[i].Type),
+						$("<div>", { "class": "lesson" }).text(data[i].Disc),
+						$("<div>", { "class": "classroom" }).text(data[i].Dept),
+					)
+				);
+			} else {
+				$(".column[data-day='" + data[i].Day + "']").append(
+					$("<div>", { "data-lesson": data[i].ItemId, "class": data[i].Week == 1 ? "lesson_em" : "lesson_dn" }).append(
+						$("<div>", { "class": "time" }).text(pairs_time[data[i].Less]),
+						$("<div>", { "class": "type" }).text(data[i].Type),
+						$("<div>", { "class": "lesson" }).text(data[i].Disc),
+						$("<div>", { "class": "classroom" }).text(data[i].Build + " " + data[i].Rooms),
+					)
+				);
+			}
+		}
+
+		preloader.close();
+		show_button.attr("disabled", false);
+		if (additional_lessons.children().length == 0)
+			additional_lessons.text("Пусто :)");
+	}
+
+	function load_error() {
+		preloader.close();
+		show_button.attr("disabled", false);
+		Error.showError("Не удается получить расписание");
+	}
+}
+
 class Preloader {
 	constructor($wrapper) {
-		this.preloader = $("<div>", { "class": "preloader" }).load('./img/preloader.svg').appendTo($wrapper);
+		if (Preloader.preloader_content == undefined)
+			this.preloader = $("<div>", { "class": "preloader" }).load('./img/preloader.svg', function (data) { Preloader.preloader_content = data; }).appendTo($wrapper);
+		else
+			this.preloader = $("<div>", { "class": "preloader" }).html(Preloader.preloader_content).appendTo($wrapper);
 	}
 	close() {
 		this.preloader.animate({ opacity: 0 }, 200, function () { $(this).remove(); });
