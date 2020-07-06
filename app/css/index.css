@@ -11,8 +11,8 @@
 	--header-background: var(--color-white);
 	--header-text: var(--color-blue);
 	--aside-background: var(--color-white);
-	--text-date-dn: var(--color-blue);
-	--text-date-em: var(--color-pink);
+	--text-date-down: var(--color-blue);
+	--text-date-up: var(--color-pink);
 	--aside-block-border: var(--color-gray);
 	--button-background: var(--color-blue);
 	--button-disabled-background: var(--color-dark-gray);
@@ -20,12 +20,14 @@
 	--button-color: var(--color-white);
 	--button-disabled-color: var(--color-white);
 	--search-input-background: var(--color-pink);
-	--search-input-disabled-background: var(--color-dark-gray);
+	--search-input-valid-background: var(--color-blue);
 	--search-input-color: var(--color-white);
-	--search-input-disabled-color: var(--color-black);
+	--search-input-valid-color: var(--color-white);
 	--search-input-placeholer: var(--color-white);
 	--additional-inf-lesson-name: var(--color-blue);
 	--additional-inf-lesson-time: var(--color-pink);
+	--info-sourse-label-color: var(--color-blue);
+	--info-sourse-label-link-color: var(--color-pink);
 	--article-background: var(--color-white);
 	--article-borders: var(--color-gray);
 	--lesson-hover-background: var(--color-gray);
@@ -66,8 +68,8 @@ body.dark {
 	--header-background: var(--color-background);
 	--header-text: var(--color-blue);
 	--aside-background: var(--color-background);
-	--text-date-dn: var(--color-blue);
-	--text-date-em: var(--color-pink);
+	--text-date-down: var(--color-blue);
+	--text-date-up: var(--color-pink);
 	--aside-block-border: var(--color-dark);
 	--button-background: var(--color-dark-blue);
 	--button-disabled-background: var(--color-black);
@@ -75,12 +77,14 @@ body.dark {
 	--button-color: var(--color-white);
 	--button-disabled-color: var(--color-border);
 	--search-input-background: var(--color-dark);
-	--search-input-disabled-background: var(--color-black);
+	--search-input-valid-background: var(--color-dark-blue);
 	--search-input-color: var(--color-white);
-	--search-input-disabled-color: var(--color-border);
+	--search-input-valid-color: var(--color-white);
 	--search-input-placeholer: var(--color-white);
 	--additional-inf-lesson-name: var(--color-blue);
 	--additional-inf-lesson-time: var(--color-pink);
+	--info-sourse-label-color: var(--color-blue);
+	--info-sourse-label-link-color: var(--color-pink);
 	--article-background: var(--color-background);
 	--article-borders: var(--color-dark);
 	--lesson-hover-background: var(--color-border);
@@ -118,6 +122,14 @@ body {
 
 .display_none {
 	display: none !important;
+}
+
+.down {
+	color: var(--text-date-down);
+}
+
+.up {
+	color: var(--text-date-up);
 }
 
 /*прелоадер*/
@@ -159,9 +171,9 @@ body {
 .grid {
 	display: grid;
 	gap: 5px;
-	grid-template-columns: 1fr 4fr;
+	grid-template-columns: 1fr 4fr 1fr;
 	grid-template-rows: 50px 1fr;
-	grid-template-areas: "header header" "aside article";
+	grid-template-areas: "logo title null" "aside article article";
 	max-width: 1920px;
 	margin: auto;
 	padding-bottom: 5px;
@@ -192,25 +204,24 @@ body {
 	z-index: -1;
 }
 
-header {
-	grid-area: header;
-	display: grid;
-	grid-template-columns: 1fr 3fr 1fr;
-	justify-items: center;
-	align-items: center;
-}
-
-header img {
-	height: 100%;
-}
-
-header a {
-	height: 100%;
-}
-
-header div {
+.title {
+	grid-area: title;
 	font-size: 20px;
 	color: var(--header-text);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.logo {
+	grid-area: logo;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.logo * {
+	height: 100%;
 }
 
 /*Сайдбар*/
@@ -220,45 +231,46 @@ aside {
 	background-color: var(--aside-background);
 	grid-area: aside;
 	margin-left: 5px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 0 10px;
 }
 
-.date {
+aside>div {
+	margin-bottom: 15px;
+}
+
+aside>div:first-of-type {
 	margin-top: 10px;
-	margin-bottom: 10px;
-	text-align: center;
 }
 
-.date.dn {
-	color: var(--text-date-dn);
+aside>span {
+	margin-top: auto;
+	padding: 5px 10px;
+	color: var(--info-sourse-label-color);
 }
 
-.date.em {
-	color: var(--text-date-em);
+aside>span>a {
+	color: var(--info-sourse-label-link-color);
 }
 
 /*Поиск*/
 
-.aside_center {
-	width: max-content;
-	height: max-content;
-	margin: auto;
-	margin-bottom: 10px;
-}
-
 .search {
-	display: grid;
+	display: flex;
+	flex-direction: column;
 	justify-items: center;
 	align-items: center;
-	border: 2px solid var(--aside-block-border);
+	border: 1.5px solid var(--aside-block-border);
+	padding: 0 10px;
 }
 
 .search>div {
-	padding: 10px 5px;
-	margin-left: 10px;
-	margin-right: 10px;
+	padding: 10px 0;
 	border-bottom: 1px solid var(--aside-block-border);
 	text-align: center;
-	width: calc(100% - 20px);
+	width: 100%;
 }
 
 .search>div:nth-last-child(1) {
@@ -290,10 +302,9 @@ aside {
 	position: relative;
 }
 
-.but_additional_lessons {
-	margin-top: 5px;
-	margin-bottom: 5px;
+.but_additional {
 	cursor: pointer;
+	margin-bottom: 10px;
 }
 
 aside select {
@@ -311,7 +322,6 @@ aside select {
 	background-color: var(--search-input-background);
 	color: var(--search-input-color);
 	text-align: center;
-	margin-top: 5px;
 	transition: background-color 0.2s ease-in-out;
 }
 
@@ -336,9 +346,9 @@ aside select {
 	color: var(--search-input-placeholer);
 }
 
-.search input:disabled {
-	background-color: var(--search-input-disabled-background);
-	color: var(--search-input-disabled-color);
+.search input.valid {
+	background-color: var(--search-input-valid-background);
+	color: var(--search-input-valid-color);
 }
 
 /*Описание предмета*/
@@ -349,10 +359,19 @@ aside select {
 	justify-items: center;
 	align-items: center;
 	width: 226px;
-	padding: 0 10px;
+	padding: 0 10px 10px 10px;
 	position: relative;
-	padding-bottom: 10px;
-	border: 2px solid var(--aside-block-border);
+	border: 1.5px solid var(--aside-block-border);
+}
+
+.additional_inf.empty {
+	margin-top: 0;
+	padding: 10px;
+}
+
+.additional_inf.empty>div {
+	width: 100%;
+	text-align: center;
 }
 
 .additional_inf, .additional_inf .lesson_img::before {
@@ -365,6 +384,28 @@ aside select {
 
 .additional_inf>div {
 	width: 100%;
+}
+
+.additional_inf span:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.additional_inf .lesson_type {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	font-size: 16px;
+	width: auto;
+	color: var(--additional-inf-lesson-name);
+}
+
+.additional_inf .lesson_week {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	font-size: 16px;
+	width: auto;
 }
 
 .additional_inf .lesson_img {
@@ -387,14 +428,11 @@ aside select {
 	border-radius: 50% 50% 0 0 / 100% 100% 0 0;
 }
 
-.additional_inf .lesson_img::after {
-	content: "";
+.additional_inf .lesson_img img {
 	position: absolute;
 	width: 80px;
 	height: 80px;
 	background-color: var(--aside-background);
-	background-image: url("../img/lessons/6.png");
-	background-size: contain;
 	border-radius: 50%;
 }
 
@@ -412,9 +450,13 @@ aside select {
 	text-align: center;
 }
 
-.additional_inf .lesson_teach {
+.additional_inf .lesson_preps {
 	font-size: 13px;
 	margin-top: 15px;
+}
+
+.additional_inf .lesson_preps>span {
+	display: block;
 }
 
 .additional_inf .lesson_groups {
@@ -427,22 +469,21 @@ aside select {
 	margin-top: 15px;
 }
 
-.additional_inf span:hover {
-	text-decoration: underline;
-	cursor: pointer;
-}
-
 /*Вне сетки*/
 
 .additional_lessons {
-	margin-top: 10px;
 	display: grid;
 	justify-items: center;
 	align-items: center;
-	border: 2px solid var(--aside-block-border);
+	border: 1.5px solid var(--aside-block-border);
 	width: 226px;
 	position: relative;
 	padding: 10px 0;
+	text-align: center;
+}
+
+.additional_lessons.empty {
+	padding: 10px;
 }
 
 .additional_lessons>div {
@@ -495,11 +536,11 @@ article {
 	overflow-y: auto;
 }
 
-article.time_em .lesson_dn {
+article.time_up .lesson_down {
 	display: none !important;
 }
 
-article.time_dn .lesson_em {
+article.time_down .lesson_up {
 	display: none !important;
 }
 
@@ -591,7 +632,6 @@ article .preloader>svg>* {
 
 .switch {
 	height: 30px;
-	margin-bottom: 10px;
 }
 
 .switch label {

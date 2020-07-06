@@ -6,6 +6,7 @@ let article;
 let day_switch;
 let additional_inf;
 let additional_lessons;
+let but_additional;
 let groups_input;
 let preps_input;
 let show_button;
@@ -15,10 +16,21 @@ let settings = {};
 
 /** Список групп | группа => id */
 let groups = {};
+/** Список групп | id => группа */
+let groups_by_id = {}
 /** Список преподавателей | имя => id */
 let preps = {};
+/** Список преподавателей | id => имя */
+let preps_by_id = {}
 /** Расписание | id => занятие */
 let timetable = {};
+
+/** Название и время пар */
+const pairs_time = ["", "1 пара (09:00-10:30)", "2 пара (10:40-12:10)", "3 пара (12:20-13:50)", "4 пара (14:10-15:40)", "5 пара (15:50-17:20)", "6 пара (17:30-19:00)", "7 пара (19:10-20:30)", "8 пара (20:40-22:00)"];
+/** Картинки для информации о предмете */
+const additional_inf_img = ["./img/lessons/1.png", "./img/lessons/2.png", "./img/lessons/3.png", "./img/lessons/4.png", "./img/lessons/5.png", "./img/lessons/6.png"];
+/** Названия месяцев в родительном падеже */
+const months_name_in_genitive = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
 
 setTimeout(module_loaded, 500, "timeout");
 
@@ -50,15 +62,15 @@ function ready() {
 function page_prepair() {
 	article = document.getElementsByTagName("article")[0];
 	day_switch = document.getElementById("checkbox");
-	let additional_lessons_but = document.getElementsByClassName("but_additional_lessons")[0];
-	additional_inf = document.getElementsByClassName("additional_inf")[0];
+	but_additional = $(".but_additional");
+	additional_inf = $(".additional_inf");
 	additional_lessons = $(".additional_lessons");
 	show_button = $("#timetable-show-but");
 
 
 	day_switch.addEventListener("change", day_change, true);
 
-	additional_lessons_but.addEventListener("click", additional_lessons_but_click, true);
+	but_additional.click(additional_but_click);
 
 	$("#settings-button-open").click(settings_open);
 	$("#settings-button-close").click(settings_close);
@@ -71,31 +83,45 @@ function page_prepair() {
 	groups_input = $("#groups_input");
 	preps_input = $("#preps_input");
 
-	groups_input.change(check_input_value);
-	preps_input.change(check_input_value);
-	groups_input.on('keypress', function (e) {
-		if (e.which === 13) show_timetable();
-	});
-	preps_input.on('keypress', function (e) {
-		if (e.which === 13) show_timetable();
-	});
+	groups_input.change(groups_input_change);
+	preps_input.change(preps_input_change);
 
-	function check_input_value() {
-		preps_input.attr("disabled", false);
-		groups_input.attr("disabled", false);
-		if (groups_input.val() != "") {
-			preps_input.attr("disabled", true);
-		} else if (preps_input.val() != "")
-			groups_input.attr("disabled", true);
+	function groups_input_change() {
+		preps_input.val("").removeClass("valid");
+		show_button.attr("disabled", false);
+		if (groups_input.val() in groups) {
+			groups_input.addClass("valid");
+		} else {
+			groups_input.val("");
+			groups_input.removeClass("valid");
+			show_button.attr("disabled", true);
+		}
+		show_timetable();
+	}
 
-		show_button.attr("disabled", true);
-		if (groups_input.val() in groups)
-			show_button.attr("disabled", false);
-		if (preps_input.val() in preps)
-			show_button.attr("disabled", false);
+	function preps_input_change() {
+		groups_input.val("").removeClass("valid");
+		show_button.attr("disabled", false);
+		if (preps_input.val() in preps) {
+			preps_input.addClass("valid");
+		} else {
+			preps_input.val("");
+			preps_input.removeClass("valid");
+			show_button.attr("disabled", true);
+		}
+		show_timetable();
+	}
+
+	function additional_but_click() {
+		if (additional_inf.hasClass("display_none"))
+			open_additional_inf();
+		else
+			open_additional_lessons();
 	}
 
 	$("#timetable-show-but").click(show_timetable);
+	empty_additional_info();
+	empty_additional_lessons()
 }
 
 function settings_prepair() {
@@ -138,22 +164,24 @@ function apply_settings() {
 
 function day_change() {
 	if (day_switch.checked) {
-		article.classList.remove("time_dn");
-		article.classList.add("time_em");
+		article.classList.remove("time_down");
+		article.classList.add("time_up");
 	} else {
-		article.classList.remove("time_em");
-		article.classList.add("time_dn");
+		article.classList.remove("time_up");
+		article.classList.add("time_down");
 	}
 }
 
-function additional_lessons_but_click() {
-	if (additional_inf.classList.contains("display_none")) {
-		additional_inf.classList.remove("display_none");
-		additional_lessons.addClass("display_none");
-	} else {
-		additional_inf.classList.add("display_none");
-		additional_lessons.removeClass("display_none");
-	}
+function open_additional_inf() {
+	additional_inf.removeClass("display_none");
+	additional_lessons.addClass("display_none");
+	but_additional.text("Вне сетки расписания");
+}
+
+function open_additional_lessons() {
+	additional_inf.addClass("display_none");
+	additional_lessons.removeClass("display_none");
+	but_additional.text("Доп. информация");
 }
 
 function settings_open() {
@@ -209,20 +237,19 @@ function set_control_value(control, value) {
 	}
 }
 
-function changeDate(is_week_em) {
-	var days = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
-	var months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабрь'];
+function changeDate(is_week_up) {
+	const days = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
 	var current_datetime = new Date();
 	var week = days[current_datetime.getDay()];
 	var date = current_datetime.getDate();
-	var month = months[current_datetime.getMonth()];
+	var month = months_name_in_genitive[current_datetime.getMonth()];
 	var year = current_datetime.getFullYear();
-	if (is_week_em) {
-		$(".date").addClass("em");
+	if (is_week_up) {
+		$(".date").addClass("up");
 		$("#checkbox").prop('checked', true);
 		$('.date').text("▲ " + week + ", " + date + " " + month + " " + year + " года");
 	} else {
-		$(".date").addClass("dn");
+		$(".date").addClass("down");
 		$("#checkbox").prop('checked', false);
 		$('.date').text("▼ " + week + ", " + date + " " + month + " " + year + " года");
 	}
@@ -238,6 +265,7 @@ function info_prepair() {
 	});
 
 	function initial_data_received(data) {
+		update_title(data.Update, data.Years);
 		changeDate(data.IsWeekUp);
 		chrome.storage.local.get("lastUpdate", function (d) {
 			if (d.lastUpdate == data.Update) {
@@ -268,6 +296,7 @@ function info_prepair() {
 			groups = data.groups;
 		}
 		for (let group in groups) {
+			groups_by_id[groups[group]] = group;
 			$("#group_num").append($("<option>").text(group));
 		}
 
@@ -296,6 +325,7 @@ function info_prepair() {
 			preps = data.preps;
 		}
 		for (let prep in preps) {
+			preps_by_id[preps[prep]] = prep;
 			$("#preps").append($("<option>").text(prep));
 		}
 
@@ -304,13 +334,23 @@ function info_prepair() {
 		}
 		preloader.close();
 	}
+
+	function update_title(update, years) {
+		let date = new Date(update);
+		$(".title").text("Расписание занятий " + years + " учебного года от " + date.getDate() + " " + months_name_in_genitive[date.getMonth()]);
+	}
 }
 
 function show_timetable() {
-	show_button.attr("disabled", true);
-	let preloader = new Preloader($("article"));
+	//очищаем
 	$(".column > div:not(.day_name)").remove();
-	additional_lessons.empty();
+	empty_additional_lessons();
+	empty_additional_info();
+
+	if (groups_input.val() == "" && preps_input.val() == "") return;
+
+	let preloader = new Preloader($("article"));
+	show_button.attr("disabled", true);
 
 	if (groups_input.val() in groups)
 		$.ajax({
@@ -323,12 +363,14 @@ function show_timetable() {
 	else {
 		groups_input.val("");
 		preps_input.val("");
-		show_button.attr("disabled", false);
+		show_button.attr("disabled", true);
 		preloader.close();
 	}
 
 	function rasp_received(data) {
-		let pairs_time = ["", "1 пара (09:00-10:30)", "2 пара (10:40-12:10)", "3 пара (12:20-13:50)", "4 пара (14:10-15:40)", "5 пара (15:50-17:20)", "6 пара (17:30-19:00)", "7 пара (19:10-20:30)", "8 пара (20:40-22:00)"];
+		additional_lessons.empty();
+		additional_lessons.removeClass("empty");
+
 		timetable = {};
 
 		data.sort(function (a, b) {
@@ -347,20 +389,20 @@ function show_timetable() {
 				);
 			} else {
 				$(".column[data-day='" + data[i].Day + "']").append(
-					$("<div>", { "data-lesson": data[i].ItemId, "class": data[i].Week == 1 ? "lesson_em" : "lesson_dn" }).append(
+					$("<div>", { "data-lesson": data[i].ItemId, "class": data[i].Week == 1 ? "lesson_up" : "lesson_down" }).append(
 						$("<div>", { "class": "time" }).text(pairs_time[data[i].Less]),
 						$("<div>", { "class": "type" }).text(data[i].Type),
 						$("<div>", { "class": "lesson" }).text(data[i].Disc),
 						$("<div>", { "class": "classroom" }).text(data[i].Build + " " + data[i].Rooms),
-					)
+					).click(show_additional_info)
 				);
 			}
 		}
 
 		preloader.close();
 		show_button.attr("disabled", false);
-		if (additional_lessons.children().length == 0)
-			additional_lessons.text("Пусто :)");
+		if (additional_lessons.children().length == 0) additional_lessons.text("Таких занятий нет :)");
+		open_additional_lessons();
 	}
 
 	function load_error() {
@@ -368,4 +410,71 @@ function show_timetable() {
 		show_button.attr("disabled", false);
 		Notify.show("Не удается получить расписание");
 	}
+}
+
+function show_additional_info() {
+
+	let lesson = timetable[$(this).data("lesson")];
+
+	if (additional_inf.data("lesson") == lesson.ItemId) return;
+
+	additional_inf.empty();
+	additional_inf.removeClass("empty");
+	additional_inf.data("lesson", lesson.ItemId);
+
+	$("<div>").addClass("lesson_type").appendTo(additional_inf).text(lesson.Type);
+	$("<div>").addClass("lesson_week").appendTo(additional_inf).text(lesson.Week == 1 ? "▲" : "▼").addClass(lesson.Week == 1 ? "up" : "down");
+	$("<div>").addClass("lesson_img").appendTo(additional_inf).append(
+		$("<img>", { "src": additional_inf_img[Math.floor(Math.random() * additional_inf_img.length)] })
+	);
+	$("<div>").addClass("lesson_name").appendTo(additional_inf).text(lesson.Disc);
+	$("<div>").addClass("lesson_time").appendTo(additional_inf).text(pairs_time[lesson.Less]);
+
+	let preps_wrapper = $("<div>").addClass("lesson_preps").appendTo(additional_inf);
+	let local_preps = lesson.Preps.slice(1, -1).split("::");
+	for (let i in local_preps) {
+		$("<span>", { "data-prep": local_preps[i] }).text(preps_by_id[local_preps[i]]).appendTo(preps_wrapper).click(prep_click);
+	}
+
+	let groups_wrapper = $("<div>").addClass("lesson_groups").appendTo(additional_inf);
+	let local_groups = lesson.Groups.slice(1, -1).split("::");
+	for (let i in local_groups) {
+		$("<span>", { "data-group": local_groups[i] }).text(groups_by_id[local_groups[i]]).appendTo(groups_wrapper).click(group_click).after(" ");
+	}
+
+	let where_wrapper = $("<div>").addClass("lesson_where").appendTo(additional_inf).text(lesson.Build + " " + lesson.Rooms);
+	if (lesson.Build == "Б.М.") {
+		where_wrapper.text("Б.М. ");
+		let where = lesson.Rooms.split(";");
+		for (let i in where) {
+			$("<span>", { "data-room": where[i] }).text(where[i]).appendTo(where_wrapper).click(where_BM_click).after(" ");
+		}
+	}
+
+	open_additional_inf();
+
+	function prep_click() {
+		preps_input.val(preps_by_id[$(this).data("prep")]).change();
+	}
+
+	function group_click() {
+		groups_input.val(groups_by_id[$(this).data("group")]).change();
+	}
+
+	function where_BM_click() {
+		chrome.tabs.create({ url: "http://sputnik.guap.ru/nav/?src=%D0%B2%D1%85%D0%BE%D0%B4&dst=" + $(this).data("room") });
+	}
+}
+
+function empty_additional_info() {
+	additional_inf.addClass("empty");
+	additional_inf.empty();
+	additional_inf.append($("<div>").text("Выберите занятие чтобы посмотреть дополнительную информацию"));
+}
+
+function empty_additional_lessons() {
+	additional_lessons.addClass("empty");
+	additional_inf.removeData("lesson");
+	additional_lessons.empty();
+	additional_lessons.text("Загрузите расписание чтобы посмотреть дополнительные занятия");
 }

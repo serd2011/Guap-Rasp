@@ -46,21 +46,21 @@
             <div class="preloader"></div>
         </div>
     </div>
+    <div class="header_background"></div>
     <div class="grid">
-        <div class="header_background"></div>
-        <header>
+        <div class="logo">
             <a href="http://guap.ru" target="_blank" title="Сайт ГУАП">
-                <img src="img/logo.png" alt="ГУАП">
+                <img src="img/logo.png">
             </a>
-            <div>Расписание занятий на весенний семестр 2018/19 учебного года</div>
-        </header>
+        </div>
+        <div class="title"></div>
         <aside>
             <div class="date"></div>
-            <div class="switch aside_center">
+            <div class="switch">
                 <input type="checkbox" id="checkbox" />
                 <label for="checkbox"></label>
             </div>
-            <div class="search aside_center">
+            <div class="search">
                 <div>
                     <input id="groups_input" type="text" list="group_num" placeholder="Группа">
                     <datalist id="group_num">
@@ -75,21 +75,12 @@
                     <button class="but" id="timetable-show-but" disabled="true">Показать расписание</button>
                 </div>
             </div>
-            <div class="aside_center">
-                <button class="but but_additional_lessons">Вне сетки расписания</button>
-            </div>
-            <div class="aside_center additional_inf">
-                <div class="lesson_img"></div>
-                <div class="lesson_name">Прикладная физическая культура (элективный модуль)</div>
-                <div class="lesson_time">Среда 3 пара (19:00 - 20:30)</div>
-                <div class="lesson_teach"><span>Кравченко В.И.</span> - профессор, д-р филос. наук, доцент</div>
-                <div class="lesson_groups"><span>1831</span> <span>1832</span> <span>1833</span> <span>1841</span> <span>1842</span> <span>1843</span> <span>1845К</span></div>
-                <div class="lesson_where">Гаст. 31-04в; 31-04б</div>
-            </div>
-            <div class="aside_center additional_lessons display_none">
-            </div>
+            <button class="but but_additional">Вне сетки расписания</button>
+            <div class="additional_inf"></div>
+            <div class="additional_lessons display_none"></div>
+            <span>Расписание получено с <a href="https://guap.ru/rasp/" target="_blank">rasp.guap</a></span>
         </aside>
-        <article class="time_dn">
+        <article class="time_down">
             <div class="column" data-day="1">
                 <div class="day_name">Понедельник</div>
             </div>
