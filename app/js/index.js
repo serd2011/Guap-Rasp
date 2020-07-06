@@ -116,14 +116,13 @@ function settings_prepair() {
 		apply_settings();
 		module_loaded("settings");
 	}
+}
 
-	function set_settings_controls() {
-		$("#settings-block *[data-role='control']").each(function () {
-			set_control_value(this, settings[$(this).data("name")]);
-		});
-		$("#settings-block > .preloader").remove();
-	}
-
+function set_settings_controls() {
+	$("#settings-block *[data-role='control']").each(function () {
+		set_control_value(this, settings[$(this).data("name")]);
+	});
+	$("#settings-block > .preloader").remove();
 }
 
 function apply_settings() {
@@ -177,6 +176,7 @@ chrome.storage.onChanged.addListener(function (changes) {
 		settings[key] = changes[key].newValue;
 	}
 	apply_settings();
+	set_settings_controls();
 });
 
 function get_control_value(control) {
@@ -338,7 +338,6 @@ function show_timetable() {
 		for (let i in data) {
 			timetable[data[i].ItemId] = data[i];
 			if (data[i].Day == 0) {
-				console.log(data[i]);
 				additional_lessons.append(
 					$("<div>", { "data-lesson": data[i].ItemId }).append(
 						$("<div>", { "class": "type" }).text(data[i].Type),
