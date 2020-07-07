@@ -36,6 +36,8 @@
     transition: left 0.3s ease-in-out;
     pointer-events: all;
     min-width: 300px;
+    display: flex;
+    flex-direction: column;
 }
 
 #settings-block.open {
@@ -129,6 +131,22 @@
     flex: 1;
 }
 
+.setting:last-of-type {
+    border-bottom: none;
+}
+
 #settings-block>.preloader {
     top: 50px;
+}
+
+.inf-reload {
+    margin-top: auto;
+    display: block;
+    padding: 0;
+}
+
+.inf-reload>button {
+    width: 100%;
+    padding: 5px;
+    cursor: pointer;
 }

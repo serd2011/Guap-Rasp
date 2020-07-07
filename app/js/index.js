@@ -82,6 +82,7 @@ function page_prepair() {
 	$("#settings-button-open").click(settings_open);
 	$("#settings-button-close").click(settings_close);
 	$("#settings-background").click(settings_close);
+	$("#inf-reload").click(function () { chrome.storage.local.set({ "lastUpdate": "" }); full_reload(); });
 
 	$("#settings-block *[data-role='control']").each(function () {
 		$(this).change(function setting_changed() {
@@ -386,11 +387,8 @@ function find_prep_by_name(name) {
 
 /** Получает и выводит расписание*/
 async function show_timetable() {
-	//очищаем
-	$(".column > div:not(.day_name)").remove();
-	empty_additional_lessons();
-	empty_additional_info();
-	timetable = {};
+
+	clear_timetable();
 
 	if (groups_input.val() == "" && preps_input.val() == "") return;
 
@@ -557,4 +555,19 @@ function clear_inputs() {
 	groups_input.removeClass("valid");
 	preps_input.removeClass("valid");
 	show_button.attr("disabled", true);
+}
+
+/** Очищает расписание */
+function clear_timetable() {
+	timetable = {};
+	$(".column > div:not(.day_name)").remove();
+	empty_additional_lessons();
+	empty_additional_info();
+}
+
+/** Полностью перезагружает все приложение */
+function full_reload() {
+	clear_inputs();
+	clear_timetable();
+	info_prepair();
 }
