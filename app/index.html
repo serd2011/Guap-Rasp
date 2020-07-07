@@ -3,17 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Language" content="ru">
+    <title>ГУАП Расписание</title>
 
-    <link href="css/index.css" rel="stylesheet">
     <link href="css/settings.css" rel="stylesheet">
-    <link href="css/lib.css" rel="stylesheet">
 
     <script src="js/jquery-3.5.1.min.js"></script>
+    <script src="js/chrome-storage-promise.js"></script>
 
-    <script src="js/lib.js" defer></script>
+    <link href="css/Preloader.css" rel="stylesheet">
+    <script src="js/Preloader.js"></script>
+
+    <link href="css/Exception.css" rel="stylesheet">
+    <script src="js/Exception.js"></script>
+
+    <link href="css/index.css" rel="stylesheet">
     <script src="js/index.js" defer></script>
-
-    <title>ГУАП Расписание</title>
 </head>
 
 <body>
@@ -41,7 +45,11 @@
             </div>
             <div class="setting">
                 <span>Запоминать группу</span>
-                <input type="checkbox" data-role="control" data-name="save-group" data-type="sync" />
+                <input type="checkbox" data-role="control" data-name="save-group" data-type="local" />
+            </div>
+            <div class="setting">
+                <span>Показывать преподавателя полностью</span>
+                <input type="checkbox" data-role="control" data-name="full-prep" data-type="sync" />
             </div>
             <div class="preloader"></div>
         </div>
@@ -53,7 +61,7 @@
                 <img src="img/logo.png">
             </a>
         </div>
-        <div class="title"></div>
+        <div class="title">Расписание занятий</div>
         <aside>
             <div class="date"></div>
             <div class="switch">
@@ -62,8 +70,8 @@
             </div>
             <div class="search">
                 <div>
-                    <input id="groups_input" type="text" list="group_num" placeholder="Группа">
-                    <datalist id="group_num">
+                    <input id="groups_input" type="text" list="groups" placeholder="Группа">
+                    <datalist id="groups">
                     </datalist>
                 </div>
                 <div>
