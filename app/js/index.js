@@ -5,8 +5,7 @@ let day_switch;
 let additional_inf;
 let additional_lessons;
 let but_additional;
-let groups_input;
-let preps_input;
+let inputs;
 let show_button;
 
 /** Текущие настройки */
@@ -24,6 +23,11 @@ const pairs_time = ["", "1 пара (09:00-10:30)", "2 пара (10:40-12:10)", 
 const additional_inf_img = ["./img/lessons/1.png", "./img/lessons/2.png", "./img/lessons/3.png", "./img/lessons/4.png", "./img/lessons/5.png", "./img/lessons/6.png"];
 /** Названия месяцев в родительном падеже */
 const months_name_in_genitive = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+
+const Type = {
+	"group": 1,
+	"prep": 2
+}
 /** Массив выжных Url'ов */
 const url = {
 	"info": {
@@ -33,8 +37,8 @@ const url = {
 	},
 	"sputnik_map": "http://sputnik.guap.ru/nav/?src=%D0%B2%D1%85%D0%BE%D0%B4&dst=",
 	"timetable": {
-		"group": "https://api.guap.ru/rasp/custom/get-sem-rasp/group",
-		"prep": "https://api.guap.ru/rasp/custom/get-sem-rasp/prep",
+		[Type.group]: "https://api.guap.ru/rasp/custom/get-sem-rasp/group",
+		[Type.prep]: "https://api.guap.ru/rasp/custom/get-sem-rasp/prep",
 	},
 }
 
@@ -60,9 +64,10 @@ function module_loaded(name) {
 }
 module_loaded.modules = { "settings": false, "timeout": false };
 
-function ready() {
+async function ready() {
 	page_prepair();
-	settings_prepair();
+	await settings_prepair();
+	module_loaded("settings");
 	info_prepair();
 }
 
@@ -82,50 +87,33 @@ function page_prepair() {
 	$("#settings-button-open").click(settings_open);
 	$("#settings-button-close").click(settings_close);
 	$("#settings-background").click(settings_close);
-	$("#inf-reload").click(function () { chrome.storage.local.set({ "lastUpdate": "" }); full_reload(); });
+	$("#inf-reload").click(async function () { await chrome.storage.promise.local.clear(); await chrome.storage.promise.sync.clear(); full_reload(); });
 
 	$("#settings-block *[data-role='control']").each(function () {
-		$(this).change(function setting_changed() {
-			if ($(this).data("type") == "sync")
-				chrome.storage.sync.set({ [$(this).data("name")]: get_control_value(this) });
-			else
-				chrome.storage.local.set({ [$(this).data("name")]: get_control_value(this) });
-		});
+		$(this).change(setting_changed);
 	});
 
-	groups_input = $("#groups_input");
-	preps_input = $("#preps_input");
-
-	groups_input.change(groups_input_change);
-	preps_input.change(preps_input_change);
-
-	function groups_input_change() {
-		preps_input.val("").removeClass("valid");
-		show_button.attr("disabled", false);
-		let id = find_group_by_name(groups_input.val());
-		if (id != -1) {
-			groups_input.addClass("valid");
-			groups_input.data("id", id);
-		} else {
-			groups_input.val("");
-			groups_input.removeClass("valid");
-			groups_input.removeData("id");
-			show_button.attr("disabled", true);
-		}
-		show_timetable();
+	inputs = {
+		[Type.group]: $("#groups_input"),
+		[Type.prep]: $("#preps_input")
 	}
 
-	function preps_input_change() {
-		groups_input.val("").removeClass("valid");
+	inputs[Type.group].change(input_change);
+	inputs[Type.prep].change(input_change);
+
+	function input_change() {
+		let changed_type = $(this)[0] == inputs[Type.group][0] ? Type.group : Type.prep;
+		let another_type = $(this)[0] == inputs[Type.group][0] ? Type.prep : Type.group;
+		inputs[another_type].val("").removeClass("valid").removeData("id");
 		show_button.attr("disabled", false);
-		let id = find_prep_by_name(preps_input.val());
+		let id = find_by_name(inputs[changed_type].val(), changed_type);
 		if (id != -1) {
-			preps_input.addClass("valid");
-			preps_input.data("id", id);
+			inputs[changed_type].addClass("valid");
+			inputs[changed_type].data("id", id);
 		} else {
-			preps_input.val("");
-			preps_input.removeClass("valid");
-			preps_input.removeData("id");
+			inputs[changed_type].val("");
+			inputs[changed_type].removeClass("valid");
+			inputs[changed_type].removeData("id");
 			show_button.attr("disabled", true);
 		}
 		show_timetable();
@@ -143,28 +131,39 @@ function page_prepair() {
 	empty_additional_lessons();
 }
 
+//==============
+//	Настройки
+//==============
+
+/** Подготовка настроек*/
 async function settings_prepair() {
-	let temp = { "local": [], "sync": [] };
-
-	$("#settings-block *[data-role='control']").each(function () {
-		temp[$(this).data("type")].push($(this).data("name"));
-	});
-
-	let sync_settings = await chrome.storage.promise.sync.get(temp.sync);
-	let local_settings = await chrome.storage.promise.local.get(temp.local);
-
-	settings = { ...sync_settings, ...local_settings };
+	await load_settings();
 	set_settings_controls();
 	apply_settings();
-	module_loaded("settings");
 }
 
-/** Устанавливание контролы настроек в правильные положения*/
+/** Загружает настройки */
+async function load_settings() {
+	let sync = await chrome.storage.promise.sync.get("settings");
+	let local = await chrome.storage.promise.local.get("settings");
+	settings = { ...sync.settings, ...local.settings };
+}
+
+/** Сохраняет значения контролов настроек в хранилище */
+function setting_changed() {
+	let temp = { "local": {}, "sync": {} };
+	$("#settings-block *[data-role='control']").each(function () {
+		temp[$(this).data("type")][$(this).data("name")] = get_control_value(this);
+	});
+	chrome.storage.sync.set({ "settings": temp.sync });
+	chrome.storage.local.set({ "settings": temp.local });
+}
+
+/** Устанавливание контролы настроек в правильные положения */
 function set_settings_controls() {
 	$("#settings-block *[data-role='control']").each(function () {
 		set_control_value(this, settings[$(this).data("name")]);
 	});
-	$("#settings-block > .preloader").remove();
 }
 
 /** Применяет настройки */
@@ -180,48 +179,22 @@ function apply_settings() {
 	fill_datalists();
 }
 
-function day_change() {
-	if (day_switch.checked) {
-		article.classList.remove("time_down");
-		article.classList.add("time_up");
-	} else {
-		article.classList.remove("time_up");
-		article.classList.add("time_down");
-	}
-}
-
-/** Открывает блок дополнительной информаци*/
-function open_additional_inf() {
-	additional_inf.removeClass("display_none");
-	additional_lessons.addClass("display_none");
-	but_additional.text("Вне сетки расписания");
-}
-
-/** Открывает блок дополнительных предметов*/
-function open_additional_lessons() {
-	additional_inf.addClass("display_none");
-	additional_lessons.removeClass("display_none");
-	but_additional.text("Доп. информация");
-}
-
-/** Открывает настройки*/
+/** Открывает настройки */
 function settings_open() {
 	$("#settings-block").addClass("open");
 	$("#settings-background").addClass("shown");
 }
 
-/** Закрывает настройки*/
+/** Закрывает настройки */
 function settings_close() {
 	$("#settings-block").removeClass("open");
 	$("#settings-background").removeClass("shown");
 }
 
 chrome.storage.onChanged.addListener(function (changes) {
-	for (let key in changes) {
-		settings[key] = changes[key].newValue;
+	if ("settings" in changes) {
+		settings_prepair();
 	}
-	apply_settings();
-	set_settings_controls();
 });
 
 /** Получает значение контрола правильным методом */
@@ -256,28 +229,9 @@ function set_control_value(control, value) {
 	}
 }
 
-/**
- * Выводит текущую дату и устанавливает переключатель недель в нужное положение
- * @param {boolean} is_week_up Является ли неделя верхней
- */
-function changeDate(is_week_up) {
-	const days = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
-	var current_datetime = new Date();
-	var week = days[current_datetime.getDay()];
-	var date = current_datetime.getDate();
-	var month = months_name_in_genitive[current_datetime.getMonth()];
-	var year = current_datetime.getFullYear();
-	if (is_week_up) {
-		$(".date").addClass("up");
-		$("#checkbox").prop('checked', true);
-		$('.date').text("▲ " + week + ", " + date + " " + month + " " + year + " года");
-	} else {
-		$(".date").addClass("down");
-		$("#checkbox").prop('checked', false);
-		$('.date').text("▼ " + week + ", " + date + " " + month + " " + year + " года");
-	}
-	day_change();
-}
+//==============
+//	  Инфа
+//==============
 
 /** Загружает и обрабатывает начальную информацию, а также информацию о группах и преподавателях */
 async function info_prepair() {
@@ -294,10 +248,12 @@ async function info_prepair() {
 			await chrome.storage.promise.local.set({ "lastUpdate": initial_data.Update });
 		} else await load_info();
 		fill_datalists();
+		//Загружаем предыдущий запрос при необходимости
+		if (settings["save-request"]) await load_saved_request();
 	} catch (e) {
 		//Удаляем дату последнего обновления чтобы в следующий раз заного загрузить данные
 		chrome.storage.local.set({ "lastUpdate": "" });
-		Notify.show("Произошла ошибка при обновлении данных");
+		Exception.show("Произошла ошибка при обновлении данных", e.toString());
 		return;
 	}
 	preloader.close();
@@ -333,7 +289,36 @@ async function load_info() {
 	preps = data.preps;
 }
 
-/** Очищает и заполняет datalist'ы*/
+/** Загружает и устанавливает предыдущий запрос */
+async function load_saved_request() {
+	let data = await chrome.storage.promise.local.get("request");
+	if (data.request) load_value_to_input(data.request.id, data.request.type);
+}
+
+/**
+ * Выводит текущую дату и устанавливает переключатель недель в нужное положение
+ * @param {boolean} is_week_up Является ли неделя верхней
+ */
+function changeDate(is_week_up) {
+	const days = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+	var current_datetime = new Date();
+	var week = days[current_datetime.getDay()];
+	var date = current_datetime.getDate();
+	var month = months_name_in_genitive[current_datetime.getMonth()];
+	var year = current_datetime.getFullYear();
+	if (is_week_up) {
+		$(".date").addClass("up");
+		$("#checkbox").prop('checked', true);
+		$('.date').text("▲ " + week + ", " + date + " " + month + " " + year + " года");
+	} else {
+		$(".date").addClass("down");
+		$("#checkbox").prop('checked', false);
+		$('.date').text("▼ " + week + ", " + date + " " + month + " " + year + " года");
+	}
+	day_change();
+}
+
+/** Очищает и заполняет datalist'ы */
 function fill_datalists() {
 	$("#groups").empty();
 	$("#preps").empty();
@@ -384,35 +369,42 @@ function find_prep_by_name(name) {
 			return i;
 	return -1;
 }
+/**
+ * 
+ * @param {string} name Имя
+ * @param {*} type Тип
+ */
+function find_by_name(name, type) {
+	return type == Type.group ? find_group_by_name(name) : find_prep_by_name(name);
+}
 
-/** Получает и выводит расписание*/
+//==============
+//  Расписание
+//==============
+
+/** Получает и выводит расписание */
 async function show_timetable() {
-
 	clear_timetable();
 
-	if (groups_input.val() == "" && preps_input.val() == "") return;
+	let id;
+	let type;
 
-	let preloader = new Preloader($("article"));
-	show_button.attr("disabled", true);
+	if (id = inputs[Type.group].data("id"))
+		type = Type.group;
+	else if (id = inputs[Type.prep].data("id"))
+		type = Type.prep;
+	else {
+		clear_inputs();
+		return;
+	};
 
 	let data;
+	let preloader = new Preloader($("article"));
+	show_button.attr("disabled", true);
+	save_request_to_storage(id, type);
+
 	try {
-		//Пробуем взять id из поля группы
-		let id = groups_input.data("id");
-		if (id) {
-			data = await $.ajax({ url: url.timetable.group + id });
-		} else {
-			//Пробуем взять id из поля преподавателя
-			id = preps_input.data("id");
-			if (id) {
-				data = await $.ajax({ url: url.timetable.prep + id });
-			} else {
-				//Не получилось взять id ни из одного поля
-				clear_inputs();
-				preloader.close();
-				return;
-			}
-		}
+		data = await $.ajax({ url: url.timetable[type] + id });
 	} catch (e) {
 		preloader.close();
 		show_button.attr("disabled", false);
@@ -456,7 +448,7 @@ async function show_timetable() {
 	open_additional_lessons();
 }
 
-/** Показывает дополнительную информацию по занятию*/
+/** Показывает дополнительную информацию по занятию */
 function show_additional_info() {
 
 	let lesson = timetable[$(this).data("lesson")];
@@ -507,23 +499,11 @@ function show_additional_info() {
 	open_additional_inf();
 
 	function prep_click() {
-		clear_inputs();
-		let id = $(this).data("prep");
-		preps_input.val(get_prep_name(id));
-		preps_input.data("id", id);
-		preps_input.addClass("valid");
-		show_button.attr("disabled", false);
-		show_timetable();
+		load_value_to_input($(this).data("prep"), Type.prep);
 	}
 
 	function group_click() {
-		clear_inputs();
-		let id = $(this).data("group");
-		groups_input.val(groups[id]);
-		groups_input.data("id", id);
-		groups_input.addClass("valid");
-		show_button.attr("disabled", false);
-		show_timetable();
+		load_value_to_input($(this).data("group"), Type.group);
 	}
 
 	function where_BM_click() {
@@ -531,14 +511,42 @@ function show_additional_info() {
 	}
 }
 
-/** Очищает блок дополнительной информации*/
+function day_change() {
+	if (day_switch.checked) {
+		article.classList.remove("time_down");
+		article.classList.add("time_up");
+	} else {
+		article.classList.remove("time_up");
+		article.classList.add("time_down");
+	}
+}
+
+/** Открывает блок дополнительной информаци */
+function open_additional_inf() {
+	additional_inf.removeClass("display_none");
+	additional_lessons.addClass("display_none");
+	but_additional.text("Вне сетки расписания");
+}
+
+/** Открывает блок дополнительных предметов */
+function open_additional_lessons() {
+	additional_inf.addClass("display_none");
+	additional_lessons.removeClass("display_none");
+	but_additional.text("Доп. информация");
+}
+
+//==============
+//	 Очистки
+//==============
+
+/** Очищает блок дополнительной информации */
 function empty_additional_info() {
 	additional_inf.addClass("empty");
 	additional_inf.empty();
 	additional_inf.append($("<div>").text("Выберите занятие чтобы посмотреть дополнительную информацию"));
 }
 
-/** Очищает блок дополнительных предметов*/
+/** Очищает блок дополнительных предметов */
 function empty_additional_lessons() {
 	additional_lessons.addClass("empty");
 	additional_inf.removeData("lesson");
@@ -546,14 +554,14 @@ function empty_additional_lessons() {
 	additional_lessons.text("Загрузите расписание чтобы посмотреть дополнительные занятия");
 }
 
-/** Очищает поля группы и преподавателя*/
+/** Очищает поля группы и преподавателя */
 function clear_inputs() {
-	groups_input.val("");
-	preps_input.val("");
-	groups_input.removeData("id");
-	preps_input.removeData("id");
-	groups_input.removeClass("valid");
-	preps_input.removeClass("valid");
+	inputs[Type.group].val("");
+	inputs[Type.prep].val("");
+	inputs[Type.group].removeData("id");
+	inputs[Type.prep].removeData("id");
+	inputs[Type.group].removeClass("valid");
+	inputs[Type.prep].removeClass("valid");
 	show_button.attr("disabled", true);
 }
 
@@ -567,7 +575,32 @@ function clear_timetable() {
 
 /** Полностью перезагружает все приложение */
 function full_reload() {
+	document.location.reload();
+}
+
+/**
+ * Загружает значение с id в нужное поле
+ * @param {int} id id значения которое надо загрузить
+ * @param {int} type тип поля и значения Type
+ */
+function load_value_to_input(id, type) {
 	clear_inputs();
-	clear_timetable();
-	info_prepair();
+	inputs[type].val(get_name(id, type));
+	inputs[type].data("id", id);
+	inputs[type].addClass("valid");
+	show_button.attr("disabled", false);
+	show_timetable();
+
+	function get_name(id, type) {
+		return type == Type.group ? groups[id] : get_prep_name(id);
+	}
+}
+
+/**
+ * Сохраняет запрос в хранилище
+ * @param {int} id id значения которое надо загрузить
+ * @param {int} type тип поля и значения Type
+ */
+function save_request_to_storage(id, type) {
+	chrome.storage.local.set({ "request": { "id": id, "type": type } });
 }
