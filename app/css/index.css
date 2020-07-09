@@ -45,6 +45,7 @@
 	--settings-button-open-hover: var(--color-blue);
 	--settings-button-close-hover: var(--color-pink);
 	--preloader-fill: var(--color-blue);
+	--switch-unactive-color: var(--color-white);
 	/*Прелоадер*/
 	--main-preloader-vignette: var(--color-black);
 	--main-preloader-top-left-background: var(--color-blue);
@@ -102,6 +103,7 @@ body.dark {
 	--settings-button-open-hover: var(--color-white);
 	--settings-button-close-hover: var(--color-dark-pink);
 	--preloader-fill: var(--color-dark-blue);
+	--switch-unactive-color: var(--color-border);
 }
 
 * {
@@ -307,7 +309,7 @@ aside>span>a {
 
 .but_additional {
 	cursor: pointer;
-	margin-bottom: 10px;
+	margin-bottom: 15px;
 }
 
 aside select {
@@ -328,25 +330,17 @@ aside select {
 	transition: background-color 0.2s ease-in-out;
 }
 
-.search input::-webkit-input-placeholder {
+.search input::placeholder {
 	color: var(--search-input-placeholer);
+}
+
+.search input:focus::placeholder {
+	color: transparent;
 }
 
 .search input::-webkit-calendar-picker-indicator {
 	background-color: inherit;
 	display: none;
-}
-
-.search input:-moz-placeholder {
-	color: var(--search-input-placeholer);
-}
-
-.search input::-moz-placeholder {
-	color: var(--search-input-placeholer);
-}
-
-.search input:-ms-input-placeholder {
-	color: var(--search-input-placeholer);
 }
 
 .search input.valid {
@@ -357,7 +351,7 @@ aside select {
 /*Описание предмета*/
 
 .additional_inf {
-	margin-top: 50px;
+	margin-top: 40px;
 	display: grid;
 	justify-items: center;
 	align-items: center;
@@ -423,10 +417,10 @@ aside select {
 .additional_inf .lesson_img::before {
 	content: "";
 	position: absolute;
-	width: 84px;
-	height: 42px;
-	left: -2px;
-	top: -2px;
+	width: 83px;
+	height: 41px;
+	left: -1.5px;
+	top: -1.5px;
 	background: var(--aside-block-border);
 	border-radius: 50% 50% 0 0 / 100% 100% 0 0;
 }
@@ -652,7 +646,7 @@ article .preloader>svg>* {
 
 .switch label:after {
 	content: "Нижняя";
-	width: 100px;
+	width: 95px;
 	height: 30px;
 	position: absolute;
 	left: 0px;
@@ -675,7 +669,30 @@ article .preloader>svg>* {
 }
 
 .switch #checkbox:checked+label:after {
-	left: 90px;
+	left: 95px;
 	background: var(--button-active);
+	content: "Верхняя";
+}
+
+.switch label>div {
+	width: 100%;
+	position: relative;
+	display: flex;
+}
+
+.switch label>div:after, .switch label>div:before {
+	width: 95px;
+	height: 30px;
+	display: block;
+	text-align: center;
+	font-size: 14px;
+	color: var(--switch-unactive-color);
+}
+
+.switch label>div:before {
+	content: "Нижняя";
+}
+
+.switch label>div:after {
 	content: "Верхняя";
 }

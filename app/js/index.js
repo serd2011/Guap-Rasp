@@ -106,6 +106,7 @@ function page_prepair() {
 		let another_type = $(this)[0] == inputs[Type.group][0] ? Type.prep : Type.group;
 		inputs[another_type].val("").removeClass("valid").removeData("id");
 		show_button.attr("disabled", false);
+		inputs[changed_type].val(inputs[changed_type].val().trim());
 		let id = find_by_name(inputs[changed_type].val(), changed_type);
 		if (id != -1) {
 			inputs[changed_type].addClass("valid");
@@ -444,12 +445,19 @@ async function show_timetable() {
 
 	preloader.close();
 	show_button.attr("disabled", false);
-	if (additional_lessons.children().length == 0) additional_lessons.text("Таких занятий нет :)");
-	open_additional_lessons();
+	if (additional_lessons.children().length == 0) {
+		but_additional.hide();
+		show_additional_info();
+	} else {
+		but_additional.show();
+		open_additional_lessons();
+	}
 }
 
 /** Показывает дополнительную информацию по занятию */
 function show_additional_info() {
+
+	open_additional_inf();
 
 	let lesson = timetable[$(this).data("lesson")];
 
@@ -495,8 +503,6 @@ function show_additional_info() {
 			$("<span>", { "data-room": where[i] }).text(where[i]).appendTo(where_wrapper).click(where_BM_click).after(" ");
 		}
 	}
-
-	open_additional_inf();
 
 	function prep_click() {
 		load_value_to_input($(this).data("prep"), Type.prep);

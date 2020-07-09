@@ -37,22 +37,22 @@
                 <span>Настройки</span>
             </div>
             <div class="setting">
-                <span>Тема</span>
+                <span title="Изменение темы оформления">Тема</span>
                 <select data-role="control" data-name="theme" data-type="sync">
                     <option value="light">Светлая</option>
                     <option value="dark">Темная</option>
                 </select>
             </div>
             <div class="setting">
-                <span>Сохранять запрос при перезагрузке</span>
+                <span title="Загружает предыдущий запрос при запуске">Сохранять запрос при перезагрузке</span>
                 <input type="checkbox" data-role="control" data-name="save-request" data-type="local" />
             </div>
             <div class="setting">
-                <span>Показывать преподавателя полностью</span>
+                <span title="Показывает должность преподавателя вместе с его именем">Показывать информацию о преподавателе</span>
                 <input type="checkbox" data-role="control" data-name="full-prep" data-type="sync" />
             </div>
             <div class="inf-reload">
-                <button class="but background-change" id="inf-reload">Удалить все данные</button>
+                <button class="but background-change" id="inf-reload" title="Удаляет всю сохраненную информацию (настройки и списки групп и преподавателей)">Удалить все данные</button>
             </div>
         </div>
     </div>
@@ -68,7 +68,9 @@
             <div class="date"></div>
             <div class="switch">
                 <input type="checkbox" id="checkbox" />
-                <label for="checkbox"></label>
+                <label for="checkbox">
+                    <div></div>
+                </label>
             </div>
             <div class="search">
                 <div>

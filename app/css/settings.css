@@ -129,6 +129,7 @@
 
 .setting>span {
     flex: 1;
+    padding-right: 10px;
 }
 
 .setting:last-of-type {
