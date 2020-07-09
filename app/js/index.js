@@ -447,7 +447,7 @@ async function show_timetable() {
 	show_button.attr("disabled", false);
 	if (additional_lessons.children().length == 0) {
 		but_additional.hide();
-		show_additional_info();
+		open_additional_inf();
 	} else {
 		but_additional.show();
 		open_additional_lessons();
