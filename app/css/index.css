@@ -44,6 +44,7 @@
 	--setting-delimiter: var(--color-gray);
 	--settings-button-open-hover: var(--color-blue);
 	--settings-button-close-hover: var(--color-pink);
+	--settings-checkbox: var(--color-pink);
 	--preloader-fill: var(--color-blue);
 	--switch-unactive-color: var(--color-white);
 	/*Прелоадер*/
@@ -102,6 +103,7 @@ body.dark {
 	--setting-delimiter: var(--color-dark-dark);
 	--settings-button-open-hover: var(--color-white);
 	--settings-button-close-hover: var(--color-dark-pink);
+	--settings-checkbox: var(--color-blue);
 	--preloader-fill: var(--color-dark-blue);
 	--switch-unactive-color: var(--color-border);
 }

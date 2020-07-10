@@ -151,3 +151,32 @@
     padding: 5px;
     cursor: pointer;
 }
+
+.setting select {
+    padding:0px 3px ;
+    border:1px solid #ccc;
+    border-right:none;
+    border-top-left-radius:5px;
+    border-bottom-left-radius:5px;
+    overflow:hidden;
+}
+
+.setting input[type=checkbox] {
+    opacity: 0;
+}
+
+.setting label:after {
+    content: "";
+    display: inline-block;
+    height: 10px;
+    width: 10px;
+    border: 1px solid;
+}
+.setting input[type=checkbox]:checked + label:after {
+	content: "\2713";
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+	font-size: 12px;
+	color: var(--settings-checkbox);
+	text-align: center;
+    line-height: 12px;
+}
