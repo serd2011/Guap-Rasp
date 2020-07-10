@@ -226,6 +226,10 @@ body {
 	height: 100%;
 }
 
+.logo img{
+	cursor: pointer;
+}
+
 /*Сайдбар*/
 
 aside {

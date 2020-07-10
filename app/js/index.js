@@ -130,6 +130,8 @@ function page_prepair() {
 	$("#timetable-show-but").click(show_timetable);
 	empty_additional_info();
 	empty_additional_lessons();
+
+	$(".logo>img").click(function(){window.open("http://guap.ru", '_blank');}); //Ссылка по клику
 }
 
 //==============
