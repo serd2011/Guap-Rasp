@@ -131,7 +131,7 @@ function page_prepair() {
 	empty_additional_info();
 	empty_additional_lessons();
 
-	$(".logo>img").click(function(){window.open("http://guap.ru", '_blank');}); //Ссылка по клику
+	$(".logo>img").click(function () { window.open("http://guap.ru", '_blank'); }); //Ссылка по клику
 }
 
 //==============
@@ -439,7 +439,7 @@ async function show_timetable() {
 					$("<div>", { "class": "time" }).text(pairs_time[data[i].Less]),
 					$("<div>", { "class": "type" }).text(data[i].Type),
 					$("<div>", { "class": "lesson" }).text(data[i].Disc),
-					$("<div>", { "class": "classroom" }).text(data[i].Build + " " + data[i].Rooms),
+					$("<div>", { "class": "classroom" }).text(data[i].Build + " " + (data[i].Rooms ? data[i].Rooms : "")),
 				).click(show_additional_info)
 			);
 		}
@@ -497,7 +497,7 @@ function show_additional_info() {
 		groups_wrapper.text("Группа не указана");
 	}
 
-	let where_wrapper = $("<div>").addClass("lesson_where").appendTo(additional_inf).text(lesson.Build + " " + lesson.Rooms);
+	let where_wrapper = $("<div>").addClass("lesson_where").appendTo(additional_inf).text(lesson.Build + " " + (lesson.Rooms ? lesson.Rooms : ""));
 	if (lesson.Rooms && lesson.Build == "Б.М.") {
 		where_wrapper.text("Б.М. ");
 		let where = lesson.Rooms.split(";");
