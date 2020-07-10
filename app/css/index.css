@@ -6,28 +6,36 @@
 	--color-blue: #005aaa;
 	--color-pink: #e72b70;
 	--color-black: #000;
+	/* Всякое */
 	--text-default: var(--color-black);
 	--body-background: var(--color-gray);
 	--header-background: var(--color-white);
 	--header-text: var(--color-blue);
+	/* Левые настроки */
 	--aside-background: var(--color-white);
+	--week-switch-unactive-color: var(--color-white);
 	--text-date-down: var(--color-blue);
 	--text-date-up: var(--color-pink);
 	--aside-block-border: var(--color-gray);
+	/* Кнопки */
 	--button-background: var(--color-blue);
 	--button-disabled-background: var(--color-dark-gray);
 	--button-active: var(--color-pink);
 	--button-color: var(--color-white);
 	--button-disabled-color: var(--color-white);
+	/* Поиск */
 	--search-input-background: var(--color-pink);
 	--search-input-valid-background: var(--color-blue);
 	--search-input-color: var(--color-white);
 	--search-input-valid-color: var(--color-white);
 	--search-input-placeholer: var(--color-white);
+	/* Доп. Инфа */
 	--additional-inf-lesson-name: var(--color-blue);
 	--additional-inf-lesson-time: var(--color-pink);
+	/* Ссылка на guap.rasp */
 	--info-sourse-label-color: var(--color-blue);
 	--info-sourse-label-link-color: var(--color-pink);
+	/* Само расписание */
 	--article-background: var(--color-white);
 	--article-borders: var(--color-gray);
 	--lesson-hover-background: var(--color-gray);
@@ -36,6 +44,7 @@
 	--lesson-classroom: var(--color-pink);
 	--lesson-type: var(--color-black);
 	--lesson-box-shadow: var(--color-gray);
+	/* Настройки */
 	--settings-button-open: var(--color-dark-gray);
 	--settings-button-close: var(--color-gray);
 	--settings-background: var(--color-white);
@@ -45,9 +54,13 @@
 	--settings-button-open-hover: var(--color-blue);
 	--settings-button-close-hover: var(--color-pink);
 	--settings-checkbox: var(--color-pink);
+	/* Переключатель */
+	--switch-off: var(--color-dark-gray);
+	--switch-on: var(--color-blue);
+	--switch-but: var(--color-white);
+	/* Прелоадер */
 	--preloader-fill: var(--color-blue);
-	--switch-unactive-color: var(--color-white);
-	/*Прелоадер*/
+	/* Основной прелоадер */
 	--main-preloader-vignette: var(--color-black);
 	--main-preloader-top-left-background: var(--color-blue);
 	--main-preloader-bottom-right-background: var(--color-pink);
@@ -65,28 +78,37 @@ body.dark {
 	--color-dark-blue: #005aaa;
 	--color-pink: #ff4c8e;
 	--color-dark-pink: #e72b70;
+	--color-real-white: #fff;
+	/* Всякое */
 	--text-default: var(--color-white);
 	--body-background: var(--color-dark);
 	--header-background: var(--color-background);
 	--header-text: var(--color-blue);
+	/* Левые настроки */
 	--aside-background: var(--color-background);
+	--week-switch-unactive-color: var(--color-border);
 	--text-date-down: var(--color-blue);
 	--text-date-up: var(--color-pink);
 	--aside-block-border: var(--color-dark);
+	/* Кнопки */
 	--button-background: var(--color-dark-blue);
 	--button-disabled-background: var(--color-black);
 	--button-active: var(--color-dark-pink);
 	--button-color: var(--color-white);
 	--button-disabled-color: var(--color-border);
+	/* Поиск */
 	--search-input-background: var(--color-dark);
 	--search-input-valid-background: var(--color-dark-blue);
 	--search-input-color: var(--color-white);
 	--search-input-valid-color: var(--color-white);
 	--search-input-placeholer: var(--color-white);
+	/* Доп. Инфа */
 	--additional-inf-lesson-name: var(--color-blue);
 	--additional-inf-lesson-time: var(--color-pink);
+	/* Ссылка на guap.rasp */
 	--info-sourse-label-color: var(--color-blue);
 	--info-sourse-label-link-color: var(--color-pink);
+	/* Само расписание */
 	--article-background: var(--color-background);
 	--article-borders: var(--color-dark);
 	--lesson-hover-background: var(--color-border);
@@ -95,6 +117,7 @@ body.dark {
 	--lesson-classroom: var(--color-pink);
 	--lesson-type: var(--color-white);
 	--lesson-box-shadow: var(--color-dark-dark);
+	/* Настройки */
 	--settings-button-open: var(--color-dark-dark);
 	--settings-button-close: var(--color-dark);
 	--settings-background: var(--color-background);
@@ -104,8 +127,12 @@ body.dark {
 	--settings-button-open-hover: var(--color-white);
 	--settings-button-close-hover: var(--color-dark-pink);
 	--settings-checkbox: var(--color-blue);
+	/* Переключатель */
+	--switch-off: var(--color-dark-dark);
+	--switch-on: var(--color-dark-pink);
+	--switch-but: var(--color-real-white);
+	/* Прелоадер */
 	--preloader-fill: var(--color-dark-blue);
-	--switch-unactive-color: var(--color-border);
 }
 
 * {
@@ -227,7 +254,7 @@ body {
 	height: 100%;
 }
 
-.logo img{
+.logo img {
 	cursor: pointer;
 }
 
@@ -308,7 +335,7 @@ aside>span>a {
 	cursor: default;
 }
 
-.switch {
+.week-switch {
 	position: relative;
 }
 
@@ -632,11 +659,11 @@ article .preloader>svg>* {
 
 /*Переключатель*/
 
-.switch {
+.week-switch {
 	height: 30px;
 }
 
-.switch label {
+.week-switch label {
 	display: block;
 	left: 0px;
 	top: 0;
@@ -649,7 +676,7 @@ article .preloader>svg>* {
 	cursor: pointer;
 }
 
-.switch label:after {
+.week-switch label:after {
 	content: "Нижняя";
 	width: 95px;
 	height: 30px;
@@ -665,39 +692,39 @@ article .preloader>svg>* {
 	font-size: 14px;
 }
 
-.switch #checkbox {
+.week-switch #checkbox {
 	display: none;
 }
 
-.switch #checkbox:checked+label {
+.week-switch #checkbox:checked+label {
 	left: 0px;
 }
 
-.switch #checkbox:checked+label:after {
+.week-switch #checkbox:checked+label:after {
 	left: 95px;
 	background: var(--button-active);
 	content: "Верхняя";
 }
 
-.switch label>div {
+.week-switch label>div {
 	width: 100%;
 	position: relative;
 	display: flex;
 }
 
-.switch label>div:after, .switch label>div:before {
+.week-switch label>div:after, .week-switch label>div:before {
 	width: 95px;
 	height: 30px;
 	display: block;
 	text-align: center;
 	font-size: 14px;
-	color: var(--switch-unactive-color);
+	color: var(--week-switch-unactive-color);
 }
 
-.switch label>div:before {
+.week-switch label>div:before {
 	content: "Нижняя";
 }
 
-.switch label>div:after {
+.week-switch label>div:after {
 	content: "Верхняя";
 }

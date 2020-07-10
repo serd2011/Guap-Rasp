@@ -43,16 +43,16 @@
                     <option value="dark">Темная</option>
                 </select>
             </div>
-            <div class="setting">
+            <label class="setting switch">
                 <span title="Загружает предыдущий запрос при запуске">Сохранять запрос при перезагрузке</span>
-                <input type="checkbox" id="c1" data-role="control" data-name="save-request" data-type="local" />
-                <label for="c1"></label>
-            </div>
-            <div class="setting">
+                <input type="checkbox" data-role="control" data-name="save-request" data-type="local" />
+                <div></div>
+            </label>
+            <label class="setting switch">
                 <span title="Показывает должность преподавателя вместе с его именем">Показывать информацию о преподавателе</span>
-                <input type="checkbox" id="c2" data-role="control" data-name="full-prep" data-type="sync" />
-                <label for="c2"></label>
-            </div>
+                <input type="checkbox" data-role="control" data-name="full-prep" data-type="sync" />
+                <div></div>
+            </label>
             <div class="inf-reload">
                 <button class="but background-change" id="inf-reload" title="Удаляет всю сохраненную информацию (настройки и списки групп и преподавателей)">Удалить все данные</button>
             </div>
@@ -66,7 +66,7 @@
         <div class="title">Расписание занятий</div>
         <aside>
             <div class="date"></div>
-            <div class="switch">
+            <div class="week-switch">
                 <input type="checkbox" id="checkbox" />
                 <label for="checkbox">
                     <div></div>
