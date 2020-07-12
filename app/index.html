@@ -16,8 +16,11 @@
     <link href="css/Exception.css" rel="stylesheet">
     <script src="js/Exception.js"></script>
 
+    <link href="css/controls.css" rel="stylesheet">
+    <script src="js/controls.js" module></script>
+
     <link href="css/index.css" rel="stylesheet">
-    <script src="js/index.js" defer></script>
+    <script src="js/index.js"></script>
 </head>
 
 <body>
@@ -38,19 +41,23 @@
             </div>
             <div class="setting">
                 <span title="Изменение темы оформления">Тема</span>
-                <select data-role="control" data-name="theme" data-type="sync">
-                    <option value="light">Светлая</option>
-                    <option value="dark">Темная</option>
-                </select>
+                <div class="select">
+                    <input type="text" data-role="control" data-name="theme" data-type="sync" data-default="light">
+                    <div class="select-head">Светлая</div>
+                    <div class="select-options">
+                        <div data-value="light" style="display: none;">Светлая</div>
+                        <div data-value="dark">Темная</div>
+                    </div>
+                </div>
             </div>
             <label class="setting switch">
                 <span title="Загружает предыдущий запрос при запуске">Сохранять запрос при перезагрузке</span>
-                <input type="checkbox" data-role="control" data-name="save-request" data-type="local" />
+                <input type="checkbox" data-role="control" data-name="save-request" data-type="local" data-default="true" />
                 <div></div>
             </label>
             <label class="setting switch">
                 <span title="Показывает должность преподавателя вместе с его именем">Показывать информацию о преподавателе</span>
-                <input type="checkbox" data-role="control" data-name="full-prep" data-type="sync" />
+                <input type="checkbox" data-role="control" data-name="full-prep" data-type="sync" data-default="false" />
                 <div></div>
             </label>
             <div class="inf-reload">
@@ -74,14 +81,16 @@
             </div>
             <div class="search">
                 <div>
-                    <input id="groups_input" type="text" list="groups" placeholder="Группа">
-                    <datalist id="groups">
-                    </datalist>
+                    <div class="select-search">
+                        <input id="groups_input" type="text" placeholder="Группа" autocomplete="off">
+                        <div id="groups" class="select-options"></div>
+                    </div>
                 </div>
                 <div>
-                    <input id="preps_input" type="text" list="preps" placeholder="Преподаватель">
-                    <datalist id="preps">
-                    </datalist>
+                    <div class="select-search">
+                        <input id="preps_input" type="text" placeholder="Преподаватель" autocomplete="off">
+                        <div id="preps" class="select-options"></div>
+                    </div>
                 </div>
                 <div class="but_wrap">
                     <button class="but background-change" id="timetable-show-but" disabled="true">Показать расписание</button>

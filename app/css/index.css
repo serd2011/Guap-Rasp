@@ -61,6 +61,19 @@
 	--switch-off: var(--color-dark-gray);
 	--switch-on: var(--color-blue);
 	--switch-but: var(--color-white);
+	/* Селект */
+	--select-head-beckground: var(--color-blue);
+	--select-head-color: var(--color-white);
+	--select-option-background: var(--color-white);
+	--select-option-color: var(--color-blue);
+	--select-option-hover-background: var(--color-blue);
+	--select-option-hover-color: var(--color-white);
+	/* Селект с поиском */
+	--select-search-option-color: var(--color-blue);
+	--select-search-option-background: var(--color-white);
+	--select-search-option-border: var(--color-blue);
+	--select-search-option-hover-color: var(--color-white);
+	--select-search-option-hover-background: var(--color-pink);
 	/* Прелоадер */
 	--preloader-fill: var(--color-blue);
 	/* Основной прелоадер */
@@ -137,6 +150,19 @@ body.dark {
 	--switch-off: var(--color-dark-dark);
 	--switch-on: var(--color-dark-pink);
 	--switch-but: var(--color-real-white);
+	/* Селект */
+	--select-head-beckground: var(--color-dark-pink);
+	--select-head-color: var(--color-real-white);
+	--select-option-background: var(--color-dark-dark);
+	--select-option-color: var(--color-white);
+	--select-option-hover-background: var(--color-dark-pink);
+	--select-option-hover-color: var(--color-real-white);
+	/* Селект с поиском */
+	--select-search-option-color: var(--color-blue);
+	--select-search-option-background: var(--color-dark-dark);
+	--select-search-option-border: var(--color-border);
+	--select-search-option-hover-color: var(--color-white);
+	--select-search-option-hover-background: var(--color-dark-pink);
 	/* Прелоадер */
 	--preloader-fill: var(--color-dark-blue);
 }
@@ -173,16 +199,7 @@ body {
 
 #main-preloader {
 	z-index: 10000;
-	background-image: radial-gradient(
-			circle,
-			transparent 50%,
-			var(--main-preloader-vignette) 150%
-		),
-		linear-gradient(
-			130deg,
-			var(--main-preloader-top-left-background) 20%,
-			var(--main-preloader-bottom-right-background) 80%
-		);
+	background-image: radial-gradient( circle, transparent 50%, var(--main-preloader-vignette) 150%), linear-gradient( 130deg, var(--main-preloader-top-left-background) 20%, var(--main-preloader-bottom-right-background) 80%);
 }
 
 #main-preloader img {
@@ -286,21 +303,21 @@ aside {
 	padding: 0 10px;
 }
 
-aside > div {
+aside>div {
 	margin-bottom: 15px;
 }
 
-aside > div:first-of-type {
+aside>div:first-of-type {
 	margin-top: 10px;
 }
 
-aside > span {
+aside>span {
 	margin-top: auto;
 	padding: 5px 10px;
 	color: var(--info-sourse-label-color);
 }
 
-aside > span > a {
+aside>span>a {
 	color: var(--info-sourse-label-link-color);
 }
 
@@ -315,14 +332,14 @@ aside > span > a {
 	padding: 0 10px;
 }
 
-.search > div {
+.search>div {
 	padding: 10px 0;
 	border-bottom: 1px solid var(--aside-block-border);
 	text-align: center;
 	width: 100%;
 }
 
-.search > div:nth-last-child(1) {
+.search>div:nth-last-child(1) {
 	border-bottom: none;
 }
 
@@ -413,22 +430,20 @@ aside select {
 	padding: 10px;
 }
 
-.additional_inf.empty > div {
+.additional_inf.empty>div {
 	width: 100%;
 	text-align: center;
 }
 
-.additional_inf,
-.additional_inf .lesson_img::before {
+.additional_inf, .additional_inf .lesson_img::before {
 	transition: box-shadow 0.1s ease-in-out;
 }
 
-.additional_inf:hover,
-.additional_inf:hover .lesson_img::before {
+.additional_inf:hover, .additional_inf:hover .lesson_img::before {
 	box-shadow: 2px 2px 10px var(--lesson-box-shadow);
 }
 
-.additional_inf > div {
+.additional_inf>div {
 	width: 100%;
 }
 
@@ -501,11 +516,12 @@ aside select {
 	margin-top: 15px;
 }
 
-.additional_inf .lesson_preps > span {
+.additional_inf .lesson_preps>span {
 	display: block;
 	color: var(--additional-inf-preps-name);
 }
-.additional_inf .lesson_preps > span:not(:first-child):not(:last-child) {
+
+.additional_inf .lesson_preps>span:not(:first-child):not(:last-child) {
 	margin: 5px 0;
 }
 
@@ -514,7 +530,7 @@ aside select {
 	margin-top: 15px;
 }
 
-.additional_inf .lesson_groups > span {
+.additional_inf .lesson_groups>span {
 	color: var(--additional-inf-group-number);
 }
 
@@ -523,7 +539,7 @@ aside select {
 	margin-top: 15px;
 }
 
-.additional_inf .lesson_where > span {
+.additional_inf .lesson_where>span {
 	color: var(--additional-inf-rooms-number);
 }
 
@@ -544,7 +560,7 @@ aside select {
 	padding: 10px;
 }
 
-.additional_lessons > div {
+.additional_lessons>div {
 	display: grid;
 	width: 100%;
 	grid-template-columns: 25px 1fr;
@@ -554,7 +570,7 @@ aside select {
 	transition: box-shadow 0.1s ease-out;
 }
 
-.additional_lessons > div:hover {
+.additional_lessons>div:hover {
 	box-shadow: 2px 2px 15px var(--lesson-box-shadow);
 	cursor: pointer;
 }
@@ -602,7 +618,7 @@ article.time_down .lesson_up {
 	display: none !important;
 }
 
-article > div {
+article>div {
 	border-left: 1.5px solid var(--article-borders);
 	overflow: hidden;
 	text-align: center;
@@ -616,7 +632,7 @@ article > div {
 	overflow: visible;
 }
 
-.column > div {
+.column>div {
 	width: calc(100% - 10px);
 	padding: 5px;
 }
@@ -629,7 +645,7 @@ article > div {
 	color: var(--day-name);
 }
 
-.column > div:not(.day_name) {
+.column>div:not(.day_name) {
 	display: grid;
 	grid-template-columns: 25px 1fr;
 	grid-template-areas: "time time" "type lesson" "type classroom";
@@ -641,7 +657,7 @@ article > div {
 	width: 100%;
 }
 
-.column > div:not(.day_name):hover {
+.column>div:not(.day_name):hover {
 	box-shadow: 2px 2px 15px var(--lesson-box-shadow);
 	cursor: pointer;
 }
@@ -678,11 +694,11 @@ article .preloader {
 	background-color: transparent;
 }
 
-article .preloader > svg {
+article .preloader>svg {
 	width: 20%;
 }
 
-article .preloader > svg > * {
+article .preloader>svg>* {
 	animation: preloader-rotate 0.5s linear infinite;
 }
 
@@ -725,24 +741,23 @@ article .preloader > svg > * {
 	display: none;
 }
 
-.week-switch #checkbox:checked + label {
+.week-switch #checkbox:checked+label {
 	left: 0px;
 }
 
-.week-switch #checkbox:checked + label:after {
+.week-switch #checkbox:checked+label:after {
 	left: 95px;
 	background: var(--button-active);
 	content: "Верхняя";
 }
 
-.week-switch label > div {
+.week-switch label>div {
 	width: 100%;
 	position: relative;
 	display: flex;
 }
 
-.week-switch label > div:after,
-.week-switch label > div:before {
+.week-switch label>div:after, .week-switch label>div:before {
 	width: 95px;
 	height: 30px;
 	display: block;
@@ -751,10 +766,20 @@ article .preloader > svg > * {
 	color: var(--week-switch-unactive-color);
 }
 
-.week-switch label > div:before {
+.week-switch label>div:before {
 	content: "Нижняя";
 }
 
-.week-switch label > div:after {
+.week-switch label>div:after {
 	content: "Верхняя";
+}
+
+/* Селекты с поиском */
+
+.select-options#groups {
+	max-height: min(calc(100vh - 190px), 500px);
+}
+
+.select-options#preps {
+	max-height: min(calc(100vh - 240px), 500px);
 }

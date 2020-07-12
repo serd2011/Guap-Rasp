@@ -158,13 +158,16 @@ function setting_changed() {
 	$("#settings-block *[data-role='control']").each(function () {
 		temp[$(this).data("type")][$(this).data("name")] = get_control_value(this);
 	});
-	chrome.storage.sync.set({ "settings": temp.sync });
-	chrome.storage.local.set({ "settings": temp.local });
+	if (settings !== { ...temp.sync.settings, ...temp.local.settings }) {
+		chrome.storage.sync.set({ "settings": temp.sync });
+		chrome.storage.local.set({ "settings": temp.local });
+	}
 }
 
 /** Устанавливание контролы настроек в правильные положения */
 function set_settings_controls() {
 	$("#settings-block *[data-role='control']").each(function () {
+		if (!settings[$(this).data("name")]) settings[$(this).data("name")] = $(this).data("default");
 		set_control_value(this, settings[$(this).data("name")]);
 	});
 }
@@ -207,8 +210,9 @@ function get_control_value(control) {
 			switch ($(control).attr('type')) {
 				case "checkbox":
 					return control.checked;
+				default:
+					return $(control).val();
 			}
-			return $(control).val();
 		default:
 			return $(control).val();
 	}
@@ -223,11 +227,13 @@ function set_control_value(control, value) {
 				case "checkbox":
 					control.checked = value;
 					break;
+				default:
+					$(control).val(value).trigger("value:changed");
+					break;
 			}
-			$(control).val(value);
 			break;
 		default:
-			$(control).val(value);
+			$(control).val(value).trigger("value:changed");
 			break;
 	}
 }
@@ -326,11 +332,13 @@ function fill_datalists() {
 	$("#groups").empty();
 	$("#preps").empty();
 	for (let i in groups) {
-		$("#groups").append($("<option>").text(groups[i]));
+		$("#groups").append($("<div>").text(groups[i]));
 	}
 	for (let i in preps) {
-		$("#preps").append($("<option>").text(get_prep_name(i)));
+		$("#preps").append($("<div>").text(get_prep_name(i)));
 	}
+	$("#groups").trigger("select:reload");
+	$("#preps").trigger("select:reload");
 }
 
 /**
@@ -387,6 +395,10 @@ function find_by_name(name, type) {
 
 /** Получает и выводит расписание */
 async function show_timetable() {
+
+	// Чтобы предотваритить одновременную загрузку и показ нескольких одинаковых расписаний
+	if (show_timetable.is_bisy) return;
+
 	clear_timetable();
 
 	let id;
@@ -401,8 +413,11 @@ async function show_timetable() {
 		return;
 	};
 
+	show_timetable.is_bisy = true;
 	let data;
 	let preloader = new Preloader($("article"));
+	inputs[Type.group].attr("disabled", true);
+	inputs[Type.prep].attr("disabled", true);
 	show_button.attr("disabled", true);
 	save_request_to_storage(id, type);
 
@@ -446,6 +461,8 @@ async function show_timetable() {
 	}
 
 	preloader.close();
+	inputs[Type.group].attr("disabled", false);
+	inputs[Type.prep].attr("disabled", false);
 	show_button.attr("disabled", false);
 	if (additional_lessons.children().length == 0) {
 		but_additional.hide();
@@ -454,6 +471,7 @@ async function show_timetable() {
 		but_additional.show();
 		open_additional_lessons();
 	}
+	show_timetable.is_bisy = false;
 }
 
 /** Показывает дополнительную информацию по занятию */

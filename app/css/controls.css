@@ -1,0 +1,142 @@
+/* Чекбокс */
+
+.switch>input {
+    display: none;
+}
+
+.switch>div {
+    box-sizing: content-box;
+    width: 30px;
+    height: 15px;
+    padding: 2px;
+    background-color: var(--switch-off);
+    border-radius: 15px;
+    position: relative;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.switch>div::after {
+    content: "";
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: var(--switch-but);
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: left 0.2s ease-in-out;
+}
+
+.switch>input:checked+div {
+    background-color: var(--switch-on);
+}
+
+.switch>input:checked+div:after {
+    left: 17px;
+}
+
+/* Селект */
+
+.select {
+    cursor: pointer;
+    position: relative;
+    min-width: 120px;
+    z-index: 1;
+    user-select: none;
+}
+
+.select>input {
+    display: none;
+}
+
+.select-head {
+    width: 100%;
+    padding: 6px 20px 6px 10px;
+    background-color: var(--select-head-beckground);
+    color: var(--select-head-color);
+    transition: all 0.2s ease-in;
+}
+
+.select .select-head:after {
+    content: "▼";
+    position: absolute;
+    right: 10px;
+}
+
+.select.active .select-head:after {
+    content: "▲";
+}
+
+.select .select-options {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+}
+
+.select.active .select-options {
+    display: block;
+}
+
+.select .select-options>div {
+    padding: 6px 20px 6px 10px;
+    background-color: var(--select-option-background);
+    border: 1px solid var(--select-head-beckground);
+    border-top: none;
+    color: var(--select-option-color);
+    transition: all 0.15s ease-in;
+}
+
+.select .select-options>div:hover {
+    color: var(--select-option-hover-color);
+    background: var(--select-option-hover-background);
+}
+
+/* Селект с поиском*/
+
+.select-search {
+    cursor: pointer;
+    position: relative;
+    min-width: 120px;
+    user-select: none;
+}
+
+.select-search.active .select-options {
+    display: block;
+}
+
+.select-search .select-options {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 500px;
+    overflow-y: scroll;
+    border-bottom: 1px solid var(--select-search-option-border);
+    z-index: 1;
+    scrollbar-width: none;
+}
+
+.select-search .select-options::-webkit-scrollbar {
+    display: none;
+}
+
+.select-search .active .select-options {
+    display: block;
+}
+
+.select-search .select-options>div {
+    padding: 6px 20px 6px 10px;
+    background-color: var(--select-search-option-background);
+    border: 1px solid var(--select-search-option-border);
+    border-bottom: none;
+    color: var(--select-search-option-color);
+    transition: all 0.15s ease-in;
+}
+
+.select-search .select-options>div:hover {
+    color: var(--select-search-option-hover-color);
+    background: var(--select-search-option-hover-background);
+}
