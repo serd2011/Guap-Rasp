@@ -131,6 +131,12 @@ function page_prepair() {
 	empty_additional_info();
 	empty_additional_lessons();
 
+	$(document).keydown(function (e) {
+		if (e.keyCode != 27) return;
+		empty_additional_info();
+		if (additional_lessons.children().length != 0) open_additional_lessons();
+	});
+
 	$(".logo>img").click(function () { window.open("http://guap.ru", '_blank'); }); //Ссылка по клику
 }
 
