@@ -72,13 +72,12 @@ async function ready() {
 }
 
 function page_prepair() {
-	article = document.getElementsByTagName("article")[0];
+	article = $("article");
 	day_switch = document.getElementById("checkbox");
 	but_additional = $(".but_additional");
 	additional_inf = $(".additional_inf");
 	additional_lessons = $(".additional_lessons");
 	show_button = $("#timetable-show-but");
-
 
 	day_switch.addEventListener("change", day_change, true);
 
@@ -138,110 +137,7 @@ function page_prepair() {
 	});
 
 	$(".logo>img").click(function () { window.open("http://guap.ru", '_blank'); }); //Ссылка по клику
-}
 
-//==============
-//	Настройки
-//==============
-
-/** Подготовка настроек*/
-async function settings_prepair() {
-	await load_settings();
-	set_settings_controls();
-	apply_settings();
-}
-
-/** Загружает настройки */
-async function load_settings() {
-	let sync = await chrome.storage.promise.sync.get("settings");
-	let local = await chrome.storage.promise.local.get("settings");
-	settings = { ...sync.settings, ...local.settings };
-}
-
-/** Сохраняет значения контролов настроек в хранилище */
-function setting_changed() {
-	let temp = { "local": {}, "sync": {} };
-	$("#settings-block *[data-role='control']").each(function () {
-		temp[$(this).data("type")][$(this).data("name")] = get_control_value(this);
-	});
-	if (settings !== { ...temp.sync.settings, ...temp.local.settings }) {
-		chrome.storage.sync.set({ "settings": temp.sync });
-		chrome.storage.local.set({ "settings": temp.local });
-	}
-}
-
-/** Устанавливание контролы настроек в правильные положения */
-function set_settings_controls() {
-	$("#settings-block *[data-role='control']").each(function () {
-		if (!($(this).data("name") in settings)) settings[$(this).data("name")] = $(this).data("default");
-		set_control_value(this, settings[$(this).data("name")]);
-	});
-}
-
-/** Применяет настройки */
-function apply_settings() {
-	switch (settings.theme) {
-		case "light":
-			$("body").removeClass("dark");
-			break;
-		case "dark":
-			$("body").addClass("dark");
-			break;
-	}
-	fill_datalists();
-}
-
-/** Открывает настройки */
-function settings_open() {
-	$("#settings-block").addClass("open");
-	$("#settings-background").addClass("shown");
-}
-
-/** Закрывает настройки */
-function settings_close() {
-	$("#settings-block").removeClass("open");
-	$("#settings-background").removeClass("shown");
-}
-
-chrome.storage.onChanged.addListener(function (changes) {
-	if ("settings" in changes) {
-		settings_prepair();
-	}
-});
-
-/** Получает значение контрола правильным методом */
-function get_control_value(control) {
-	switch (control.nodeName) {
-		case "INPUT":
-			switch ($(control).attr('type')) {
-				case "checkbox":
-					return control.checked;
-				default:
-					return $(control).val();
-			}
-		default:
-			return $(control).val();
-	}
-}
-
-/** Устанавливает значение контролу правильным методом */
-function set_control_value(control, value) {
-	if (value == undefined) return;
-	switch (control.nodeName) {
-		case "INPUT":
-			switch ($(control).attr('type')) {
-				case "checkbox":
-					control.checked = value;
-					break;
-				default:
-					$(control).val(value).trigger("value:changed");
-					break;
-			}
-			break;
-		default:
-			$(control).val(value).trigger("value:changed");
-			break;
-	}
 }
 
 //==============
@@ -255,7 +151,7 @@ async function info_prepair() {
 		//Получаем начальные данные
 		let initial_data = await $.ajax({ url: url.info.initial });
 		update_title(initial_data.Update, initial_data.Years);
-		changeDate(initial_data.IsWeekUp);
+		initDateLabelAndSwitch(initial_data.IsWeekUp);
 		let last_Update = await chrome.storage.promise.local.get("lastUpdate");
 		//Проверяем дату последнего обновления
 		if (last_Update.lastUpdate != initial_data.Update) {
@@ -314,7 +210,7 @@ async function load_saved_request() {
  * Выводит текущую дату и устанавливает переключатель недель в нужное положение
  * @param {boolean} is_week_up Является ли неделя верхней
  */
-function changeDate(is_week_up) {
+function initDateLabelAndSwitch(is_week_up) {
 	const days = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
 	var current_datetime = new Date();
 	var week = days[current_datetime.getDay()];
@@ -421,7 +317,7 @@ async function show_timetable() {
 
 	show_timetable.is_bisy = true;
 	let data;
-	let preloader = new Preloader($("article"));
+	let preloader = new Preloader(article);
 	inputs[Type.group].attr("disabled", true);
 	inputs[Type.prep].attr("disabled", true);
 	show_button.attr("disabled", true);
@@ -430,6 +326,7 @@ async function show_timetable() {
 	try {
 		data = await $.ajax({ url: url.timetable[type] + id });
 	} catch (e) {
+		show_timetable.is_bisy = false;
 		preloader.close();
 		show_button.attr("disabled", false);
 		Notify.show("Не удается получить расписание");
@@ -439,30 +336,46 @@ async function show_timetable() {
 	//Очищаем блок дополнительных предметов
 	additional_lessons.empty();
 	additional_lessons.removeClass("empty");
+
+	let is_need_extended = false;
 	//Сортируем по номеру пары чтобы блоки создавались в правильном порядке
-	data.sort(function (a, b) {
-		return parseFloat(a.Less) - parseFloat(b.Less);
-	});
+	if (!settings["timetable-as-table"])
+		data.sort(function (a, b) {
+			return Number(a.Less) - Number(b.Less);
+		});
 
 	for (let i in data) {
 		timetable[data[i].ItemId] = data[i];
 		if (data[i].Day == 0) {
 			additional_lessons.append(
-				$("<div>", { "data-lesson": data[i].ItemId }).append(
+				$("<div>", { "data-lesson-id": data[i].ItemId }).append(
 					$("<div>", { "class": "type" }).text(data[i].Type),
-					$("<div>", { "class": "lesson" }).text(data[i].Disc),
+					$("<div>", { "class": "name" }).text(data[i].Disc),
 					$("<div>", { "class": "classroom" }).text(data[i].Dept),
 				)
 			);
 		} else {
-			$(".column[data-day='" + data[i].Day + "']").append(
-				$("<div>", { "data-lesson": data[i].ItemId, "class": data[i].Week == 1 ? "lesson_up" : "lesson_down" }).append(
-					$("<div>", { "class": "time" }).text(pairs_time[data[i].Less]),
-					$("<div>", { "class": "type" }).text(data[i].Type),
-					$("<div>", { "class": "lesson" }).text(data[i].Disc),
-					$("<div>", { "class": "classroom" }).text(data[i].Build + " " + (data[i].Rooms ? data[i].Rooms : "")),
-				).click(show_additional_info)
+			let lesson = $("<div>", { class: "lesson" }).append(
+				$("<div>", { "class": "time" }).text(pairs_time[data[i].Less]),
+				$("<div>", { "class": "type" }).text(data[i].Type),
+				$("<div>", { "class": "name" }).text(data[i].Disc),
+				$("<div>", { "class": "classroom" }).text(data[i].Build + " " + (data[i].Rooms ? data[i].Rooms : "")),
 			);
+			if (settings["timetable-as-table"]) {
+				show_timetable.cells.eq((data[i].Day - 1) * 9 + data[i].Less).append(
+					$("<div>").data("lesson-id", data[i].ItemId)
+						.addClass(data[i].Week == 1 ? "lesson_up" : "lesson_down")
+						.append(lesson)
+						.click(show_additional_info)
+				);
+			} else {
+				show_timetable.columns.eq(data[i].Day).append(
+					lesson.data("lesson-id", data[i].ItemId)
+						.addClass(data[i].Week == 1 ? "lesson_up" : "lesson_down")
+						.click(show_additional_info)
+				);
+			}
+			if (data[i].Less > 6) is_need_extended = true;
 		}
 	}
 
@@ -470,6 +383,10 @@ async function show_timetable() {
 	inputs[Type.group].attr("disabled", false);
 	inputs[Type.prep].attr("disabled", false);
 	show_button.attr("disabled", false);
+	if (is_need_extended)
+		article.addClass("extended");
+	else
+		article.removeClass("extended");
 	if (additional_lessons.children().length == 0) {
 		but_additional.hide();
 		open_additional_inf();
@@ -485,13 +402,13 @@ function show_additional_info() {
 
 	open_additional_inf();
 
-	let lesson = timetable[$(this).data("lesson")];
+	let lesson = timetable[$(this).data("lesson-id")];
 
-	if (additional_inf.data("lesson") == lesson.ItemId) return;
+	if (additional_inf.data("lesson-id") == lesson.ItemId) return;
 
 	additional_inf.empty();
 	additional_inf.removeClass("empty");
-	additional_inf.data("lesson", lesson.ItemId);
+	additional_inf.data("lesson-id", lesson.ItemId);
 
 	$("<div>").addClass("lesson_type").appendTo(additional_inf).text(lesson.Type);
 	$("<div>").addClass("lesson_week").appendTo(additional_inf).text(lesson.Week == 1 ? "▲" : "▼").addClass(lesson.Week == 1 ? "up" : "down");
@@ -545,11 +462,11 @@ function show_additional_info() {
 
 function day_change() {
 	if (day_switch.checked) {
-		article.classList.remove("time_down");
-		article.classList.add("time_up");
+		article.removeClass("time_down");
+		article.addClass("time_up");
 	} else {
-		article.classList.remove("time_up");
-		article.classList.add("time_down");
+		article.removeClass("time_up");
+		article.addClass("time_down");
 	}
 }
 
@@ -581,7 +498,7 @@ function empty_additional_info() {
 /** Очищает блок дополнительных предметов */
 function empty_additional_lessons() {
 	additional_lessons.addClass("empty");
-	additional_inf.removeData("lesson");
+	additional_inf.removeData("lesson-id");
 	additional_lessons.empty();
 	additional_lessons.text("Загрузите расписание чтобы посмотреть дополнительные занятия");
 }
@@ -600,7 +517,10 @@ function clear_inputs() {
 /** Очищает расписание */
 function clear_timetable() {
 	timetable = {};
-	$(".column > div:not(.day_name)").remove();
+	if (settings["timetable-as-table"])
+		$(">div:not(.day_name)", article).empty();
+	else
+		$(">.column > div:not(.day_name)", article).remove();
 	empty_additional_lessons();
 	empty_additional_info();
 }

@@ -6,6 +6,7 @@
     <title>ГУАП Расписание</title>
 
     <link href="css/settings.css" rel="stylesheet">
+    <script src="js/settings.js"></script>
 
     <script src="js/jquery-3.5.1.min.js"></script>
     <script src="js/chrome-storage-promise.js"></script>
@@ -42,7 +43,7 @@
             <div class="setting">
                 <span title="Изменение темы оформления">Тема</span>
                 <div class="select">
-                    <input type="text" data-role="control" data-name="theme" data-type="sync" data-default="light">
+                    <input type="text" data-role="control" data-name="theme" />
                     <div class="select-head">Светлая</div>
                     <div class="select-options">
                         <div data-value="light" style="display: none;">Светлая</div>
@@ -52,12 +53,17 @@
             </div>
             <label class="setting switch">
                 <span title="Загружает предыдущий запрос при запуске">Сохранять запрос при перезагрузке</span>
-                <input type="checkbox" data-role="control" data-name="save-request" data-type="local" data-default="true" />
+                <input type="checkbox" data-role="control" data-name="save-request" />
                 <div></div>
             </label>
             <label class="setting switch">
                 <span title="Показывает должность преподавателя вместе с его именем">Показывать информацию о преподавателе</span>
-                <input type="checkbox" data-role="control" data-name="full-prep" data-type="sync" data-default="false" />
+                <input type="checkbox" data-role="control" data-name="full-prep" />
+                <div></div>
+            </label>
+            <label class="setting switch">
+                <span title="Расписание отображается в виде таблицы">Отображать расписание в виде таблицы</span>
+                <input type="checkbox" data-role="control" data-name="timetable-as-table" />
                 <div></div>
             </label>
             <div class="inf-reload">
@@ -101,26 +107,7 @@
             <div class="additional_lessons display_none"></div>
             <span>Расписание получено с <a href="https://guap.ru/rasp/" target="_blank">rasp.guap</a></span>
         </aside>
-        <article class="time_down">
-            <div class="column" data-day="1">
-                <div class="day_name">Понедельник</div>
-            </div>
-            <div class="column" data-day="2">
-                <div class="day_name">Вторник</div>
-            </div>
-            <div class="column" data-day="3">
-                <div class="day_name">Среда</div>
-            </div>
-            <div class="column" data-day="4">
-                <div class="day_name">Четверг</div>
-            </div>
-            <div class="column" data-day="5">
-                <div class="day_name">Пятница</div>
-            </div>
-            <div class="column" data-day="6">
-                <div class="day_name">Суббота</div>
-            </div>
-        </article>
+        <article></article>
     </div>
     <div id="main-preloader" class="preloader">
         <img src="img/main-preloader.svg">

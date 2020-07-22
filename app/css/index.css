@@ -181,6 +181,7 @@ body {
 	position: relative;
 	height: max-content;
 	min-height: 100vh;
+	font-size: 75%;
 }
 
 .display_none {
@@ -553,7 +554,6 @@ aside select {
 	width: 226px;
 	position: relative;
 	padding: 10px 0;
-	text-align: center;
 }
 
 .additional_lessons.empty {
@@ -632,9 +632,8 @@ article>div {
 	overflow: visible;
 }
 
-.column>div {
-	width: calc(100% - 10px);
-	padding: 5px;
+.column>div:not(.day_name) {
+	padding: 10px;
 }
 
 .day_name {
@@ -643,14 +642,15 @@ article>div {
 	margin-bottom: 2.5px;
 	border-bottom: 1.5px solid var(--article-borders);
 	color: var(--day-name);
+	width: calc(100% - 10px);
+	padding: 5px;
 }
 
-.column>div:not(.day_name) {
+.lesson {
 	display: grid;
 	grid-template-columns: 25px 1fr;
 	grid-template-areas: "time time" "type lesson" "type classroom";
 	gap: 2px 5px;
-	padding-left: 10px;
 	margin: auto;
 	visibility: visible;
 	transition: box-shadow 0.15s ease-out;
@@ -662,14 +662,14 @@ article>div {
 	cursor: pointer;
 }
 
-.time {
+.lesson .time {
 	grid-area: time;
 	font-size: 10px;
 	text-align: left;
 	color: var(--lesson-time);
 }
 
-.type {
+.lesson .type {
 	grid-area: type;
 	font-size: 18px;
 	text-align: left;
@@ -677,13 +677,13 @@ article>div {
 	color: var(--lesson-type);
 }
 
-.lesson {
+.lesson .name {
 	grid-area: lesson;
 	font-size: 12px;
 	text-align: left;
 }
 
-.classroom {
+.lesson .classroom {
 	grid-area: classroom;
 	font-size: 11px;
 	text-align: left;
@@ -691,7 +691,7 @@ article>div {
 }
 
 article .preloader {
-	background-color: transparent;
+	background-color: transparent !important;
 }
 
 article .preloader>svg {
@@ -700,6 +700,52 @@ article .preloader>svg {
 
 article .preloader>svg>* {
 	animation: preloader-rotate 0.5s linear infinite;
+}
+
+/* Таблица */
+
+article.table {
+	grid-template-rows: max-content repeat(6, 1fr);
+	grid-auto-flow: column;
+	padding: 0;
+}
+
+article.table:not(.extended)>div:not(.day_name):nth-child(9n+8), article.table:not(.extended)>div:not(.day_name):nth-child(9n) {
+	display: none;
+}
+
+article.table.extended {
+	grid-template-rows: auto repeat(8, 1fr);
+}
+
+article.table>div {
+	position: relative;
+	background-color: var(--article-background);
+	border-bottom: 1px solid var(--article-borders);
+	border-left: 1px solid var(--article-borders);
+	overflow: visible;
+}
+
+article.table>div>div:not(.day_name) {
+	display: flex;
+	align-items: center;
+	padding: 5px;
+	padding-left: 10px;
+	position: relative;
+	height: 100%;
+	width: 100%;
+}
+
+article.table .day_name {
+	margin: 0;
+	padding: 5px 10px;
+	width: 100%;
+}
+
+article.table>div>div:hover {
+	box-shadow: 2px 2px 15px var(--lesson-box-shadow);
+	cursor: pointer;
+	z-index: 1;
 }
 
 /*Переключатель*/
