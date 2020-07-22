@@ -1,0 +1,22 @@
+{
+	"manifest_version": 2,
+	"version": "0.1",
+	"author": "Serd2011",
+	"name": "ГУАП Расписание",
+	"short_name": "ГУАП Расписание",
+	"description": "ГУАП Расписание делает расписание занятий более красивым и удобным.",
+	"background": {
+		"scripts": [
+			"js/background.js"
+		]
+	},
+	"permissions": [
+		"storage",
+		"tabs",
+		"https://api.guap.ru/rasp/*"
+	],
+	"web_accessible_resources": [
+		"app/index.html"
+	],
+	"browser_action": {}
+}
