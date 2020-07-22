@@ -167,7 +167,7 @@ function setting_changed() {
 /** Устанавливание контролы настроек в правильные положения */
 function set_settings_controls() {
 	$("#settings-block *[data-role='control']").each(function () {
-		if (!settings[$(this).data("name")]) settings[$(this).data("name")] = $(this).data("default");
+		if (!($(this).data("name") in settings)) settings[$(this).data("name")] = $(this).data("default");
 		set_control_value(this, settings[$(this).data("name")]);
 	});
 }
