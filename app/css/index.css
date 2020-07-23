@@ -715,7 +715,7 @@ article.table:not(.extended)>div:not(.day_name):nth-child(9n+8), article.table:n
 }
 
 article.table.extended {
-	grid-template-rows: auto repeat(8, 1fr);
+	grid-template-rows: max-content repeat(8, 1fr);
 }
 
 article.table>div {
