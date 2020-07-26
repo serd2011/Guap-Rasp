@@ -8,11 +8,9 @@
     box-sizing: content-box;
     width: 30px;
     height: 15px;
-    padding: 2px;
-    background-color: var(--switch-off);
+    background-color: var(--switch-background);
     border-radius: 15px;
     position: relative;
-    transition: background-color 0.2s ease-in-out;
 }
 
 .switch>div::after {
@@ -20,19 +18,17 @@
     position: absolute;
     width: 15px;
     height: 15px;
-    background-color: var(--switch-but);
+    background-color: var(--switch-but-off);
     border-radius: 50%;
-    top: 2px;
-    left: 2px;
-    transition: left 0.2s ease-in-out;
-}
-
-.switch>input:checked+div {
-    background-color: var(--switch-on);
+    padding: 2px;
+    top: -2px;
+    left: -2px;
+    transition: left 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
 .switch>input:checked+div:after {
-    left: 17px;
+    left: 15px;
+    background-color: var(--switch-but-on);
 }
 
 /* Селект */
