@@ -23,6 +23,8 @@ const pairs_time = ["", "1 пара (09:00-10:30)", "2 пара (10:40-12:10)", 
 const additional_inf_img = ["./img/lessons/1.png", "./img/lessons/2.png", "./img/lessons/3.png", "./img/lessons/4.png", "./img/lessons/5.png", "./img/lessons/6.png"];
 /** Названия месяцев в родительном падеже */
 const months_name_in_genitive = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+/** Сокращения дней недели */
+const day_short_name = ["", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
 
 const Type = {
 	"group": 1,
@@ -69,6 +71,7 @@ async function ready() {
 	await settings_prepair();
 	module_loaded("settings");
 	info_prepair();
+	saver_prepair();
 }
 
 function page_prepair() {
@@ -137,7 +140,6 @@ function page_prepair() {
 	});
 
 	$(".logo>img").click(function () { window.open("http://guap.ru", '_blank'); }); //Ссылка по клику
-
 }
 
 //==============
@@ -160,9 +162,9 @@ async function info_prepair() {
 		} else await load_info();
 		fill_datalists();
 		//Загружаем предыдущий запрос при необходимости
-		if (settings["save-request"]) await load_saved_request();
+		if (settings["save-request"]) await Saver.load(load_to_input_and_show_timetable, show_additional_info);
 	} catch (e) {
-		//Удаляем дату последнего обновления чтобы в следующий раз заного загрузить данные
+		//Удаляем дату последнего обновления чтобы в следующий раз заново загрузить данные
 		chrome.storage.local.set({ "lastUpdate": "" });
 		Exception.show("Произошла ошибка при обновлении данных", e.toString());
 		return;
@@ -203,7 +205,7 @@ async function load_info() {
 /** Загружает и устанавливает предыдущий запрос */
 async function load_saved_request() {
 	let data = await chrome.storage.promise.local.get("request");
-	if (data.request) load_value_to_input(data.request.id, data.request.type);
+	if (data.request) load_to_input_and_show_timetable(data.request.id, data.request.type);
 }
 
 /**
@@ -316,12 +318,14 @@ async function show_timetable() {
 	};
 
 	show_timetable.is_bisy = true;
+
+	$(document).trigger("GuapRasp::timetableChanged", { id: id, type: type });
+
 	let data;
 	let preloader = new Preloader(article);
 	inputs[Type.group].attr("disabled", true);
 	inputs[Type.prep].attr("disabled", true);
 	show_button.attr("disabled", true);
-	save_request_to_storage(id, type);
 
 	try {
 		data = await $.ajax({ url: url.timetable[type] + id });
@@ -363,16 +367,14 @@ async function show_timetable() {
 			);
 			if (settings["timetable-as-table"]) {
 				show_timetable.cells.eq((data[i].Day - 1) * 9 + data[i].Less).append(
-					$("<div>").data("lesson-id", data[i].ItemId)
-						.addClass(data[i].Week == 1 ? "lesson_up" : "lesson_down")
+					$("<div>").addClass(data[i].Week == 1 ? "lesson_up" : "lesson_down")
 						.append(lesson)
-						.click(show_additional_info)
+						.click(() => { show_additional_info(data[i].ItemId); })
 				);
 			} else {
 				show_timetable.columns.eq(data[i].Day).append(
-					lesson.data("lesson-id", data[i].ItemId)
-						.addClass(data[i].Week == 1 ? "lesson_up" : "lesson_down")
-						.click(show_additional_info)
+					lesson.addClass(data[i].Week == 1 ? "lesson_up" : "lesson_down")
+						.click(() => { show_additional_info(data[i].ItemId); })
 				);
 			}
 			if (data[i].Less > 6) is_need_extended = true;
@@ -397,14 +399,17 @@ async function show_timetable() {
 	show_timetable.is_bisy = false;
 }
 
-/** Показывает дополнительную информацию по занятию */
-function show_additional_info() {
-
+/** Показывает дополнительную информацию по занятию 
+ * @param {int} id id занятие информацию по которому нужно показать
+*/
+function show_additional_info(id) {
 	open_additional_inf();
 
-	let lesson = timetable[$(this).data("lesson-id")];
+	let lesson = timetable[id];
 
 	if (additional_inf.data("lesson-id") == lesson.ItemId) return;
+
+	$(document).trigger("GuapRasp::additionalInfoChanged", { id: id });
 
 	additional_inf.empty();
 	additional_inf.removeClass("empty");
@@ -416,7 +421,7 @@ function show_additional_info() {
 		$("<img>", { "src": additional_inf_img[Math.floor(Math.random() * additional_inf_img.length)] })
 	);
 	$("<div>").addClass("lesson_name").appendTo(additional_inf).text(lesson.Disc);
-	$("<div>").addClass("lesson_time").appendTo(additional_inf).text(pairs_time[lesson.Less]);
+	$("<div>").addClass("lesson_time").appendTo(additional_inf).text(day_short_name[lesson.Day] + " " + pairs_time[lesson.Less]);
 
 	let preps_wrapper = $("<div>").addClass("lesson_preps").appendTo(additional_inf);
 	if (lesson.Preps) {
@@ -448,11 +453,11 @@ function show_additional_info() {
 	}
 
 	function prep_click() {
-		load_value_to_input($(this).data("prep"), Type.prep);
+		load_to_input_and_show_timetable($(this).data("prep"), Type.prep);
 	}
 
 	function group_click() {
-		load_value_to_input($(this).data("group"), Type.group);
+		load_to_input_and_show_timetable($(this).data("group"), Type.group);
 	}
 
 	function where_BM_click() {
@@ -490,6 +495,7 @@ function open_additional_lessons() {
 
 /** Очищает блок дополнительной информации */
 function empty_additional_info() {
+	$(document).trigger("GuapRasp::additionalInfoCleared");
 	additional_inf.addClass("empty");
 	additional_inf.empty();
 	additional_inf.append($("<div>").text("Выберите занятие чтобы посмотреть дополнительную информацию"));
@@ -531,28 +537,25 @@ function full_reload() {
 }
 
 /**
- * Загружает значение с id в нужное поле
+ * Загружает значение с id в нужное поле и отображает расписания
  * @param {int} id id значения которое надо загрузить
  * @param {int} type тип поля и значения Type
  */
-function load_value_to_input(id, type) {
+async function load_to_input_and_show_timetable(id, type) {
 	clear_inputs();
 	inputs[type].val(get_name(id, type));
 	inputs[type].data("id", id);
 	inputs[type].addClass("valid");
 	show_button.attr("disabled", false);
-	show_timetable();
+	await show_timetable();
 
 	function get_name(id, type) {
 		return type == Type.group ? groups[id] : get_prep_name(id);
 	}
 }
 
-/**
- * Сохраняет запрос в хранилище
- * @param {int} id id значения которое надо загрузить
- * @param {int} type тип поля и значения Type
- */
-function save_request_to_storage(id, type) {
-	chrome.storage.local.set({ "request": { "id": id, "type": type } });
+function saver_prepair() {
+	$(document).on("GuapRasp::timetableChanged", async (event, data) => { await Saver.clear.request(); Saver.save.request(data.id, data.type); })
+		.on("GuapRasp::additionalInfoChanged", (event, data) => { Saver.save.additional_inf(data.id); })
+		.on("GuapRasp::additionalInfoCleared", () => { Saver.clear.additional_inf(); });
 }
