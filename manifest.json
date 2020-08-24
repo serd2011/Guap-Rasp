@@ -19,6 +19,14 @@
 		"app/index.html"
 	],
 	"browser_action": {},
+	"commands": {
+		"openApp": {
+			"suggested_key": {
+				"default": "Alt+T"
+			},
+			"description": "Открыть расписание"
+		}
+	},
 	"icons": {
 		"16": "img/icon-16.png",
 		"32": "img/icon-32.png",
