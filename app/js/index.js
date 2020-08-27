@@ -18,13 +18,15 @@ let preps = {};
 let timetable = {};
 
 /** Название и время пар */
-const pairs_time = ["", "1 пара (09:00-10:30)", "2 пара (10:40-12:10)", "3 пара (12:20-13:50)", "4 пара (14:10-15:40)", "5 пара (15:50-17:20)", "6 пара (17:30-19:00)", "7 пара (19:10-20:30)", "8 пара (20:40-22:00)"];
+const pairs_time = ["", "1 пара (09:30-11:00)", "2 пара (11:10-12:40)", "3 пара (13:00-14:30)", "4 пара (15:00-16:30)", "5 пара (16:40-18:10)", "6 пара (18:30-20:00)", "7 пара (12:10-21:40)", "8 пара (21:50-23:20)"];
 /** Картинки для информации о предмете */
 const additional_inf_img = ["./img/lessons/1.png", "./img/lessons/2.png", "./img/lessons/3.png", "./img/lessons/4.png", "./img/lessons/5.png", "./img/lessons/6.png"];
 /** Названия месяцев в родительном падеже */
 const months_name_in_genitive = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
 /** Сокращения дней недели */
 const day_short_name = ["", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+/** Сокращения названий корпусов */
+const build_short_names = { "Гастелло 15": "Гаст.", "Б. Морская 67": "Б.М.", "Ленсовета 14": "Ленс.", "Московский 149в": "Моск." };
 
 const Type = {
 	"group": 1,
@@ -363,7 +365,7 @@ async function show_timetable() {
 				$("<div>", { "class": "time" }).text(pairs_time[data[i].Less]),
 				$("<div>", { "class": "type" }).text(data[i].Type),
 				$("<div>", { "class": "name" }).text(data[i].Disc),
-				$("<div>", { "class": "classroom" }).text(data[i].Build + " " + (data[i].Rooms ? data[i].Rooms : "")),
+				$("<div>", { "class": "classroom" }).text(get_build(data[i].Build) + " " + (data[i].Rooms ? data[i].Rooms : "")),
 			);
 			if (settings["timetable-as-table"]) {
 				show_timetable.cells.eq((data[i].Day - 1) * 9 + data[i].Less).append(
@@ -443,9 +445,9 @@ function show_additional_info(id) {
 		groups_wrapper.text("Группа не указана");
 	}
 
-	let where_wrapper = $("<div>").addClass("lesson_where").appendTo(additional_inf).text(lesson.Build + " " + (lesson.Rooms ? lesson.Rooms : ""));
-	if (lesson.Rooms && lesson.Build == "Б.М.") {
-		where_wrapper.text("Б.М. ");
+	let where_wrapper = $("<div>").addClass("lesson_where").appendTo(additional_inf).text(get_build(lesson.Build) + " " + (lesson.Rooms ? lesson.Rooms : ""));
+	if (lesson.Rooms && lesson.Build == "Б. Морская 67") {
+		where_wrapper.text(get_build(lesson.Build) + " ");
 		let where = lesson.Rooms.split(";");
 		for (let i in where) {
 			$("<span>", { "data-room": where[i] }).text(where[i]).appendTo(where_wrapper).click(where_BM_click).after(" ");
@@ -558,4 +560,14 @@ function saver_prepair() {
 	$(document).on("GuapRasp::timetableChanged", async (event, data) => { await Saver.clear.request(); Saver.save.request(data.id, data.type); })
 		.on("GuapRasp::additionalInfoChanged", (event, data) => { Saver.save.additional_inf(data.id); })
 		.on("GuapRasp::additionalInfoCleared", () => { Saver.clear.additional_inf(); });
+}
+
+/**
+ * Вохвращает правильное название здания по его названию
+ * @param {string} name название
+ */
+function get_build(name) {
+	if (name == null) return "Не определено";
+	name = name.trim();
+	return settings["short-builds"] ? build_short_names[name] || name : name;
 }
