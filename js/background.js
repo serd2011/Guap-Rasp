@@ -19,7 +19,7 @@ chrome.commands.onCommand.addListener(function (command) {
 //open new or focus to app tab
 function openApp() {
 	if (tab_id == chrome.tabs.TAB_ID_NONE)
-		chrome.tabs.create({ url: chrome.extension.getURL("app/index.html") }, function (tab) { tab_id = tab.id; });
+		chrome.tabs.create({ url: chrome.runtime.getURL("app/index.html") }, function (tab) { tab_id = tab.id; });
 	else
 		chrome.tabs.update(tab_id, { active: true });
 }

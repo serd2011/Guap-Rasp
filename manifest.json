@@ -15,9 +15,6 @@
 		"tabs",
 		"https://api.guap.ru/rasp/*"
 	],
-	"web_accessible_resources": [
-		"app/index.html"
-	],
 	"browser_action": {},
 	"commands": {
 		"openApp": {
