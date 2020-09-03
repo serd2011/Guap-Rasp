@@ -26,7 +26,9 @@ const months_name_in_genitive = ["января", "февраля", "марта",
 /** Сокращения дней недели */
 const day_short_name = ["", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
 /** Сокращения названий корпусов */
-const build_short_names = { "Гастелло 15": "Гаст.", "Б. Морская 67": "Б.М.", "Ленсовета 14": "Ленс.", "Московский 149в": "Моск." };
+const build_short_names = { "Гастелло 15": "Гаст.", "Б.Морская 67": "Б.М.", "Ленсовета 14": "Ленс.", "Московский 149в": "Моск." };
+/** Названия корпусов для постоянной замены */
+const build_names_for_always_change = { "Дистант": "Дистанционно" }
 
 const Type = {
 	"group": 1,
@@ -446,7 +448,7 @@ function show_additional_info(id) {
 	}
 
 	let where_wrapper = $("<div>").addClass("lesson_where").appendTo(additional_inf).text(get_build(lesson.Build) + " " + (lesson.Rooms ? lesson.Rooms : ""));
-	if (lesson.Rooms && lesson.Build == "Б. Морская 67") {
+	if (lesson.Rooms && build_short_names[lesson.Build] == "Б.М.") {
 		where_wrapper.text(get_build(lesson.Build) + " ");
 		let where = lesson.Rooms.split(";");
 		for (let i in where) {
@@ -569,5 +571,6 @@ function saver_prepair() {
 function get_build(name) {
 	if (name == null) return "Не определено";
 	name = name.trim();
+	if (name in build_names_for_always_change) return build_names_for_always_change[name];
 	return settings["short-builds"] ? build_short_names[name] || name : name;
 }
