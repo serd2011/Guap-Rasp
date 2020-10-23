@@ -1,6 +1,6 @@
 {
 	"manifest_version": 2,
-	"version": "2.0",
+	"version": "2.1",
 	"author": "Serd2011",
 	"name": "ГУАП Расписание",
 	"short_name": "ГУАП Расписание",
@@ -15,10 +15,15 @@
 		"tabs",
 		"https://api.guap.ru/rasp/*"
 	],
-	"web_accessible_resources": [
-		"app/index.html"
-	],
 	"browser_action": {},
+	"commands": {
+		"openApp": {
+			"suggested_key": {
+				"default": "Alt+T"
+			},
+			"description": "Открыть расписание"
+		}
+	},
 	"icons": {
 		"16": "img/icon-16.png",
 		"32": "img/icon-32.png",

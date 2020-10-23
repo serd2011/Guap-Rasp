@@ -18,6 +18,10 @@ const settings_info = {
         type: "sync",
         default: true,
         apply: timetable_as_table_apply
+    },
+    "short-builds": {
+        type: "sync",
+        default: true,
     }
 };
 
