@@ -9,7 +9,7 @@ function ready() {
 
         head.click(function (e) {
             e.stopPropagation();
-            select.addClass("active");
+            select.toggleClass("active");
         });
 
         $(".select-options > div", this).each(function () {
@@ -41,6 +41,8 @@ function ready() {
     $(".select-search").each(function () {
         let select = $(this);
         let input = $("input", this);
+        let options_wrapper = $(".select-options-wrapper", select);
+        let options = $(".select-options", select);
 
         input.focus(function () {
             select.addClass("active");
@@ -55,14 +57,28 @@ function ready() {
 
         restart();
 
-        $(".select-options").on("select:reload", restart);
+        options.on("select:reload", restart);
 
         function restart() {
-            $(".select-options > div", select).each(function () {
+            options.removeClass("needInnerShadow");
+            $("> div", options).each(function () {
                 $(this).mousedown(function () {
                     input.val($(this).text()).change();
                 });
             });
+            checkHeight();
+        }
+
+        function checkHeight() {
+            if (options.is(":visible")) {
+                options.css("display", "block");
+            }
+            if (options[0].scrollHeight > options[0].clientHeight) {
+                options_wrapper.addClass("needInnerShadow");
+            } else {
+                options_wrapper.removeClass("needInnerShadow");
+            }
+            options.css("display", "");
         }
 
         function find() {
@@ -73,6 +89,7 @@ function ready() {
                 else
                     $(this).hide();
             });
+            checkHeight();
         }
     });
 }

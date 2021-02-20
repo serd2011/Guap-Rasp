@@ -152,6 +152,10 @@
     cursor: pointer;
 }
 
+.inf-reload>.but:hover {
+    transform: scale(1.01);
+}
+
 .setting select {
     padding: 0px 3px;
     border: 1px solid #ccc;

@@ -49,7 +49,7 @@ const url = {
 }
 
 $(document).ready(ready);
-setTimeout(module_loaded, 500, "timeout");
+setTimeout(module_loaded, 300, "timeout");
 
 /**
  * Сообщает о загруженном модуле
@@ -237,17 +237,27 @@ function initDateLabelAndSwitch(is_week_up) {
 
 /** Очищает и заполняет datalist'ы */
 function fill_datalists() {
+	fill_group();
+	fill_prep();
+}
+
+function fill_group() {
 	$("#groups").empty();
-	$("#preps").empty();
 	for (let i in groups) {
 		$("#groups").append($("<div>").text(groups[i]));
 	}
+	$("#groups").trigger("select:reload");
+}
+
+
+function fill_prep() {
+	$("#preps").empty();
 	for (let i in preps) {
 		$("#preps").append($("<div>").text(get_prep_name(i)));
 	}
-	$("#groups").trigger("select:reload");
 	$("#preps").trigger("select:reload");
 }
+
 
 /**
  * Обновляет заголовок страницы в соответствии с переданными данными

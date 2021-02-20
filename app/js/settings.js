@@ -132,18 +132,11 @@ function set_control_value(control, value) {
 //==============
 
 function theme_apply() {
-    switch (settings.theme) {
-        case "light":
-            $("body").removeClass("dark");
-            break;
-        case "dark":
-            $("body").addClass("dark");
-            break;
-    }
+    $(document.documentElement).attr("data-theme", settings.theme);
 }
 
 function full_prep_apply() {
-    fill_datalists();
+    fill_prep();
 }
 
 function timetable_as_table_apply() {
