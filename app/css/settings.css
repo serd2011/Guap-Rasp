@@ -8,12 +8,7 @@
     z-index: 1000;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.1s linear;
-}
-
-#settings-background.shown {
-    opacity: 0.5;
-    visibility: visible;
+    transition: opacity 0.2s linear, visibility 0.2s linear;
 }
 
 .settings-wrapper {
@@ -38,10 +33,6 @@
     min-width: 300px;
     display: flex;
     flex-direction: column;
-}
-
-#settings-block.open {
-    left: 0;
 }
 
 .settings-button-open-wrapper {
@@ -167,4 +158,21 @@
 
 label.setting {
     cursor: pointer;
+}
+
+body.settings-open #settings-background {
+    opacity: 0.5;
+    visibility: visible;
+}
+
+body.settings-open #settings-block {
+    left: 0;
+}
+
+body.settings-open .grid, body.settings-open .header-background {
+    filter: blur(1px);
+}
+
+.grid, .header-background {
+    transition: filter 0.2s linear;
 }

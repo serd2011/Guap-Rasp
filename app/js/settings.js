@@ -76,14 +76,12 @@ apply_settings.previous = {};
 
 /** Открывает настройки */
 function settings_open() {
-    $("#settings-block").addClass("open");
-    $("#settings-background").addClass("shown");
+    $("body").addClass("settings-open");
 }
 
 /** Закрывает настройки */
 function settings_close() {
-    $("#settings-block").removeClass("open");
-    $("#settings-background").removeClass("shown");
+    $("body").removeClass("settings-open");
 }
 
 chrome.storage.onChanged.addListener(function (changes) {
