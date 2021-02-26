@@ -50,10 +50,12 @@
                 <div class="select">
                     <input type="text" data-role="control" data-name="theme" />
                     <div class="select-head">Светлая</div>
-                    <div class="select-options">
-                        <div data-value="light" style="display: none;">Светлая</div>
-                        <div data-value="dark">Темная</div>
-                        <div data-value="oldlight">Светлая (old)</div>
+                    <div class="select-options-wrapper">
+                        <div class="select-options">
+                            <div data-value="light" style="display: none;">Светлая</div>
+                            <div data-value="dark">Темная</div>
+                            <div data-value="oldlight">Светлая (old)</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -100,16 +102,20 @@
                 <div>
                     <div class="select-search">
                         <input id="groups_input" type="text" placeholder="Группа" autocomplete="off">
-                        <div class="select-options-wrapper">
-                            <div id="groups" class="select-options"></div>
+                        <div class="select-options-wrapper-wrapper">
+                            <div class="select-options-wrapper">
+                                <div id="groups" class="select-options"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div>
                     <div class="select-search">
                         <input id="preps_input" type="text" placeholder="Преподаватель" autocomplete="off">
-                        <div class="select-options-wrapper">
-                            <div id="preps" class="select-options"></div>
+                        <div class="select-options-wrapper-wrapper">
+                            <div class="select-options-wrapper">
+                                <div id="preps" class="select-options"></div>
+                            </div>
                         </div>
                     </div>
                 </div>

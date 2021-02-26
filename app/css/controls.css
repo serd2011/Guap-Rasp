@@ -76,16 +76,23 @@
     transform: scale(1.2) rotate(180deg);
 }
 
-.select .select-options {
-    display: none;
+.select .select-options-wrapper {
+    overflow: hidden;
     position: absolute;
     top: 100%;
-    left: 0;
-    right: 0;
+    width: 100%;
+}
+
+.select .select-options {
+    display: block;
+    position: relative;
+    width: 100%;
+    transition: transform 0.1s ease-in-out;
+    transform: translateY(-100%);
 }
 
 .select.active .select-options {
-    display: block;
+    transform: translateY(0);
 }
 
 .select .select-options>div {
@@ -116,25 +123,17 @@
 }
 
 .select-search .select-options {
-    display: none;
+    display: block;
     position: relative;
-    top: 100%;
-    left: 0;
-    right: 0;
     max-height: 500px;
     overflow-y: scroll;
     border-bottom: 1px solid var(--select-search-option-border);
-    z-index: 1;
     scrollbar-width: none;
     box-sizing: content-box;
 }
 
 .select-search .select-options::-webkit-scrollbar {
     display: none;
-}
-
-.select-search .active .select-options {
-    display: block;
 }
 
 .select-search .select-options>div {
@@ -152,9 +151,13 @@
 }
 
 .select-search .select-options-wrapper {
-    position: absolute;
+    position: relative;
     overflow: hidden;
+    display: block;
     width: 100%;
+    transition: transform 0.1s ease-in-out;
+    transform: translateY(-100%);
+    z-index: 1;
 }
 
 .select-search .select-options-wrapper.needInnerShadow::after {
@@ -168,6 +171,18 @@
     display: block;
     box-shadow: 0 0 6px var(--select-search-opetions-innerShadow);
     z-index: 1;
+}
+
+.select-search .select-options-wrapper-wrapper {
+    overflow: hidden;
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.select-search.active .select-options-wrapper {
+    transform: translateY(0);
 }
 
 /* Кнопка */
