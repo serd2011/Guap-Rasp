@@ -22,6 +22,7 @@ const settings_info = {
     "short-builds": {
         type: "sync",
         default: true,
+        apply: short_names_apply
     }
 };
 
@@ -160,5 +161,9 @@ function timetable_as_table_apply() {
         );
         show_timetable.columns = $(">div", article).add(additional_lessons);
     }
+    show_timetable();
+}
+
+function short_names_apply() {
     show_timetable();
 }
