@@ -4,6 +4,7 @@
 	padding: 0;
 	font-family: Arial, Helvetica, sans-serif;
 	box-sizing: border-box;
+	user-select: none;
 }
 
 body {
@@ -73,6 +74,7 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	user-select: text;
 }
 
 .logo {
@@ -114,10 +116,16 @@ aside>span {
 	margin-top: auto;
 	padding: 5px 10px;
 	color: var(--info-sourse-label-color);
+	user-select: text;
 }
 
 aside>span>a {
 	color: var(--info-sourse-label-link-color);
+	user-select: text;
+}
+
+aside>.date{
+	user-select: text;
 }
 
 /*Поиск*/
@@ -230,6 +238,7 @@ aside select {
 	font-size: 16px;
 	width: auto;
 	color: var(--additional-inf-lesson-name);
+	user-select: text;
 }
 
 .additional_inf .lesson_week {
@@ -238,6 +247,7 @@ aside select {
 	right: 10px;
 	font-size: 16px;
 	width: auto;
+	user-select: text;
 }
 
 .additional_inf .lesson_img {
@@ -273,6 +283,7 @@ aside select {
 	margin-top: 45px;
 	font-size: 20px;
 	text-align: center;
+	user-select: text;
 }
 
 .additional_inf .lesson_time {
@@ -280,38 +291,45 @@ aside select {
 	color: var(--additional-inf-lesson-time);
 	font-size: 10px;
 	text-align: center;
+	user-select: text;
 }
 
-.additional_inf .lesson_preps {
+.additional_inf>.lesson_preps {
 	font-size: 13px;
 	margin-top: 15px;
+	user-select: text;
 }
 
 .additional_inf .lesson_preps>span {
 	display: block;
 	color: var(--additional-inf-preps-name);
+	user-select: text;
 }
 
 .additional_inf .lesson_preps>span:not(:first-child):not(:last-child) {
 	margin: 5px 0;
 }
 
-.additional_inf .lesson_groups {
+.additional_inf>.lesson_groups {
 	font-size: 13px;
 	margin-top: 15px;
+	user-select: text;
 }
 
 .additional_inf .lesson_groups>span {
 	color: var(--additional-inf-group-number);
+	user-select: text;
 }
 
-.additional_inf .lesson_where {
+.additional_inf>.lesson_where {
 	font-size: 13px;
 	margin-top: 15px;
+	user-select: text;
 }
 
 .additional_inf .lesson_where>span {
 	color: var(--additional-inf-rooms-number);
+	user-select: text;
 }
 
 /*Вне сетки*/
@@ -351,12 +369,14 @@ aside select {
 	text-align: left;
 	align-self: center;
 	color: var(--lesson-type);
+	user-select: text;
 }
 
-.additional_lessons div .lesson {
+.additional_lessons div .name {
 	grid-area: add_lesson;
 	font-size: 12px;
 	text-align: left;
+	user-select: text;
 }
 
 .additional_lessons div .classroom {
@@ -364,6 +384,7 @@ aside select {
 	font-size: 11px;
 	text-align: left;
 	color: var(--lesson-classroom);
+	user-select: text;
 }
 
 /*Осн. Контент*/
@@ -416,6 +437,11 @@ article>div {
 	padding: 5px;
 }
 
+.lesson_down,.lesson_up,.lesson_down *,.lesson_up *{
+	user-select: text;
+}
+
+
 .lesson {
 	display: grid;
 	grid-template-columns: 25px 1fr;
@@ -424,7 +450,7 @@ article>div {
 	margin: auto;
 	visibility: visible;
 	transition: box-shadow 0.15s ease-out;
-	width: 100%;
+	width: 100%;	
 }
 
 .column>div:not(.day_name):hover {
