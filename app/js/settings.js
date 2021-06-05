@@ -22,6 +22,7 @@ const settings_info = {
     "short-builds": {
         type: "sync",
         default: true,
+        apply: short_names_apply
     }
 };
 
@@ -76,14 +77,12 @@ apply_settings.previous = {};
 
 /** Открывает настройки */
 function settings_open() {
-    $("#settings-block").addClass("open");
-    $("#settings-background").addClass("shown");
+    $("body").addClass("settings-open");
 }
 
 /** Закрывает настройки */
 function settings_close() {
-    $("#settings-block").removeClass("open");
-    $("#settings-background").removeClass("shown");
+    $("body").removeClass("settings-open");
 }
 
 chrome.storage.onChanged.addListener(function (changes) {
@@ -132,18 +131,11 @@ function set_control_value(control, value) {
 //==============
 
 function theme_apply() {
-    switch (settings.theme) {
-        case "light":
-            $("body").removeClass("dark");
-            break;
-        case "dark":
-            $("body").addClass("dark");
-            break;
-    }
+    $(document.documentElement).attr("data-theme", settings.theme);
 }
 
 function full_prep_apply() {
-    fill_datalists();
+    fill_prep();
 }
 
 function timetable_as_table_apply() {
@@ -169,5 +161,9 @@ function timetable_as_table_apply() {
         );
         show_timetable.columns = $(">div", article).add(additional_lessons);
     }
+    show_timetable();
+}
+
+function short_names_apply() {
     show_timetable();
 }
