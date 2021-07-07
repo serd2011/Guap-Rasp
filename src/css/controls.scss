@@ -1,0 +1,295 @@
+.but {
+    width: 190px;
+    height: 30px;
+    outline: none;
+    border: none;
+    background-color: var(--button-background);
+    color: var(--button-color);
+    cursor: pointer;
+    transition: transform 0.05s, background-color 0.1s ease-in-out;
+
+    &:hover {
+        transform: scale(1.03);
+    }
+
+    &.background-change {
+        transition: background-color 0.1s ease-in-out;
+        &:active {
+            background-color: var(--button-active);
+        }
+    }
+
+    &:disabled {
+        background-color: var(--button-disabled-background);
+        color: var(--button-disabled-color);
+        cursor: default;
+        &:hover {
+            transform: none;
+        }
+    }
+}
+
+.BigSwitch {
+    position: relative;
+    background: var(--aside-block-border);
+    cursor: pointer;
+
+    &:hover {
+        transform: none;
+    }
+
+    span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--button-color);
+    }
+
+    > span {
+        position: absolute;
+        width: 50%;
+        height: 100%;
+        background: var(--button-background);
+        transition: background-color 0.1s linear, left 0.2s linear;
+        top: 0;
+        left: 0;
+
+        &.second {
+            left: 50%;
+            background: var(--button-active);
+        }
+    }
+    &:hover > span {
+        transform: scale(1.05);
+    }
+
+    > div {
+        position: relative;
+        display: flex;
+        width: 100%;
+        height: 100%;
+
+        > span {
+            flex-grow: 1;
+            margin: auto;
+        }
+    }
+}
+
+.Switch {
+    $width: 30px;
+    $height: 15px;
+    $butExtra: 2px;
+
+    input {
+        display: none;
+    }
+
+    input:checked + div::after {
+        left: $width - $height + $butExtra;
+        background-color: var(--switch-but-on);
+    }
+
+    div {
+        box-sizing: content-box;
+        width: $width + $butExtra;
+        height: $height;
+        background-color: var(--switch-background);
+        border-radius: $height;
+        position: relative;
+        cursor: pointer;
+
+        &::after {
+            content: "";
+            position: absolute;
+            width: $height;
+            height: $height;
+            background-color: var(--switch-but-off);
+            border-radius: 50%;
+            padding: $butExtra;
+            top: -$butExtra;
+            left: -$butExtra;
+            transition: left 0.2s ease-in-out, background-color 0.2s ease-in-out, transform 0.1s;
+        }
+        &:hover::after {
+            transform: scale(1.1);
+        }
+    }
+}
+
+.select {
+    cursor: pointer;
+    position: relative;
+    min-width: 120px;
+    z-index: 1;
+    user-select: none;
+
+    .select-head {
+        width: 100%;
+        padding: 6px 20px 6px 10px;
+        background-color: var(--select-head-beckground);
+        color: var(--select-head-color);
+        transition: all 0.2s ease-in;
+    }
+
+    .select-head:after {
+        content: "▼";
+        position: absolute;
+        right: 10px;
+        transition: transform 0.3s;
+    }
+
+    .select-head:hover::after {
+        transform: scale(1.2);
+    }
+
+    .select-options {
+        display: block;
+        position: absolute;
+        top: 100%;
+        width: 100%;
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: transform 0.1s ease-in-out;
+    }
+
+    .select-options > div {
+        padding: 6px 20px 6px 10px;
+        background-color: var(--select-option-background);
+        border: 1px solid var(--select-head-beckground);
+        border-top: none;
+        color: var(--select-option-color);
+        transition: all 0.15s ease-in;
+    }
+
+    .select-options > div:hover {
+        color: var(--select-option-hover-color);
+        background: var(--select-option-hover-background);
+    }
+
+    &.active {
+        .select-head:after {
+            transform: rotate(180deg);
+        }
+        .select-head:hover::after {
+            transform: scale(1.2) rotate(180deg);
+        }
+        .select-options {
+            transform: scaleY(1);
+        }
+    }
+}
+
+.select-search {
+    cursor: pointer;
+    position: relative;
+    min-width: 120px;
+    height: 30px;
+    user-select: none;
+    padding: 0;
+
+    input {
+        width: 100%;
+        height: 100%;
+        outline: none;
+        border: none;
+        background-color: var(--search-input-background);
+        color: var(--search-input-color);
+        text-align: center;
+        transition: background-color 0.2s ease-in-out;
+
+        &.valid {
+            background-color: var(--search-input-valid-background);
+            color: var(--search-input-valid-color);
+        }
+
+        &:disabled {
+            background-color: var(--search-input-disabled-background);
+        }
+
+        &::placeholder {
+            color: var(--search-input-placeholer);
+        }
+
+        &:focus::placeholder {
+            color: transparent;
+        }
+
+        &::-webkit-calendar-picker-indicator {
+            display: none;
+        }
+    }
+
+    .select-options {
+        display: block;
+        position: relative;
+        top: 100%;
+        width: 100%;
+        max-height: 500px;
+        overflow-y: scroll;
+        border-bottom: 1px solid var(--select-search-option-border);
+        scrollbar-width: none;
+        box-sizing: content-box;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        > div {
+            padding: 6px 20px 6px 10px;
+            background-color: var(--select-search-option-background);
+            border: 1px solid var(--select-search-option-border);
+            border-bottom: none;
+            color: var(--select-search-option-color);
+            transition: all 0.15s ease-in;
+            &:hover {
+                color: var(--select-search-option-hover-color);
+                background: var(--select-search-option-hover-background);
+            }
+        }
+    }
+
+    .select-options-wrapper {
+        position: absolute;
+        overflow: hidden;
+        width: 100%;
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: transform 0.1s ease-in-out;
+        z-index: 1;
+
+        &.needInnerShadow::after {
+            content: " ";
+            position: absolute;
+            width: 100%;
+            height: 1;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            display: block;
+            box-shadow: 0 0 6px var(--select-search-opetions-innerShadow);
+            z-index: 1;
+        }
+    }
+
+    &.active {
+        .select-options {
+            display: block;
+        }
+
+        .select-options-wrapper {
+            transform: scaleY(1);
+        }
+    }
+}
+
+.Slider {
+    overflow: hidden;
+
+    > div {
+        width: max-content;
+        display: flex;
+        align-items: flex-start;
+        transition: margin-left 0.2s ease-in-out;
+    }
+}

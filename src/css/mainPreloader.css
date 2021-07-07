@@ -1,0 +1,58 @@
+:root {
+    /* Основной прелоадер */
+    --main-preloader-vignette: #000;
+    --main-preloader-top-left-background: #005aaa;
+    --main-preloader-bottom-right-background: #e72b70;
+}
+
+#main-preloader {
+    position: absolute !important;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    z-index: 10000;
+    opacity: 1;
+    transition: opacity 0.4s linear;
+    background-image: radial-gradient(circle, transparent 50%, var(--main-preloader-vignette) 150%),
+        linear-gradient(
+            130deg,
+            var(--main-preloader-top-left-background) 20%,
+            var(--main-preloader-bottom-right-background) 80%
+        );
+}
+
+#main-preloader.exit-active {
+    opacity: 0;
+}
+
+#main-preloader img {
+    width: 30%;
+    opacity: 1;
+    animation: opacity-change 3s linear 0.5s infinite;
+}
+
+@keyframes opacity-change {
+    from {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.1;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes preloader-rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

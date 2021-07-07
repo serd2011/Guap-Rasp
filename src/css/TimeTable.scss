@@ -1,0 +1,135 @@
+article {
+    position: relative;
+    background-color: var(--article-background);
+    grid-area: article;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    margin-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    overflow-y: auto;
+
+    > div {
+        border-left: 1.5px solid var(--article-borders);
+        overflow: hidden;
+        text-align: center;
+    }
+
+    .column {
+        overflow: visible;
+
+        &:first-child {
+            border-left: none;
+        }
+
+        > div:not(.day_name) {
+            padding: 10px;
+            &:hover {
+                box-shadow: 2px 2px 15px var(--lesson-box-shadow);
+                cursor: pointer;
+            }
+        }
+    }
+
+    .day_name {
+        margin-left: 5px;
+        margin-right: 5px;
+        margin-bottom: 2.5px;
+        border-bottom: 1.5px solid var(--article-borders);
+        color: var(--day-name);
+        width: calc(100% - 10px);
+        padding: 5px;
+    }
+
+    .lesson {
+        display: grid;
+        grid-template-columns: 25px 1fr;
+        grid-template-areas: "time time" "type lesson" "type classroom";
+        gap: 2px 5px;
+        margin: auto;
+        visibility: visible;
+        transition: box-shadow 0.15s ease-out;
+        width: 100%;
+
+        .time {
+            grid-area: time;
+            font-size: 10px;
+            text-align: left;
+            color: var(--lesson-time);
+        }
+
+        .type {
+            grid-area: type;
+            font-size: 18px;
+            text-align: left;
+            align-self: center;
+            color: var(--lesson-type);
+        }
+
+        .name {
+            grid-area: lesson;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        .classroom {
+            grid-area: classroom;
+            font-size: 11px;
+            text-align: left;
+            color: var(--lesson-classroom);
+        }
+    }
+
+    .preloader {
+        background-color: transparent !important;
+
+        > svg {
+            width: 20%;
+
+            > * {
+                animation: preloader-rotate 0.5s linear infinite;
+            }
+        }
+    }
+
+    &.table {
+        grid-template-rows: max-content repeat(6, 1fr);
+        grid-auto-flow: column;
+        padding: 0;
+
+        &.extended {
+            grid-template-rows: max-content repeat(8, 1fr);
+        }
+
+        > div {
+            position: relative;
+            background-color: var(--article-background);
+            border-bottom: 1px solid var(--article-borders);
+            border-left: 1px solid var(--article-borders);
+            overflow: visible;
+
+            &.day_name {
+                margin: 0;
+                padding: 5px 10px;
+                width: 100%;
+            }
+
+            &:not(.day_name) {
+                display: flex;
+                align-items: center;
+                padding: 5px;
+                padding-left: 10px;
+                position: relative;
+                height: 100%;
+                width: 100%;
+                transition: box-shadow 0.1s;
+
+                &:not(.empty):hover {
+                    box-shadow: 2px 2px 15px var(--lesson-box-shadow);
+                    cursor: pointer;
+                    z-index: 1;
+                }
+            }
+        }
+    }
+}

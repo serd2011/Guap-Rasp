@@ -1,1 +1,3 @@
-/jsconfig.json
+jsconfig.json
+node_modules
+build

@@ -1,0 +1,39 @@
+aside {
+    position: relative;
+    background-color: var(--aside-background);
+    grid-area: aside;
+    margin-left: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 10px;
+
+    > div {
+        margin-bottom: 15px;
+
+        &:first-of-type {
+            margin-top: 10px;
+        }
+    }
+
+    > span {
+        margin-top: auto;
+        padding: 5px 10px;
+        color: var(--info-sourse-label-color);
+        > a {
+            color: var(--info-sourse-label-link-color);
+        }
+    }
+
+    .but_additional {
+        cursor: pointer;
+        margin-bottom: 15px;
+    }
+
+    select {
+        background-color: var(--select-background);
+        color: var(--select-text);
+        border-color: var(--select-border);
+        outline: none;
+    }
+}

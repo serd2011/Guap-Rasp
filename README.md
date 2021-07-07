@@ -10,9 +10,28 @@
 
 ![Интерфейс программы](./Resources/examples/main_page.png?raw=true "Интерфейс")
 
+### Требования
+Для сборки требуется node.js и npm  
+Для запуска требуется браузер поддерживающий расширения (напр. Google Chrome)
+
 ### Установка
 
 - [Через Chrome Web Store](https://chrome.google.com/webstore/detail/%D0%B3%D1%83%D0%B0%D0%BF-%D1%80%D0%B0%D1%81%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5/ninibommlkcblmokpgpeeogfkjgbcafa)
+
+### Сборка
+Установить зависимости:  
+```
+npm install
+```  
+Собрать продакшен версию (сборка будет в папке **build**):  
+```
+npm run build
+```  
+Установить собранное расширение в браузер.  
+> Для Chrome:  
+> Перейти в ```chrome://extensions/```  
+> Включить *Режим разработчика*  
+> Нажать *Загрузить распакованное расширение* и выбрать папку **build**
 
 ____
 Предложения можно отправлять в Issues с тегом __suggestion__

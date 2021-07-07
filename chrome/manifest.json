@@ -1,0 +1,37 @@
+{
+	"manifest_version": 3,
+	"version": "2.2",
+	"author": "Serd2011",
+	"name": "ГУАП Расписание",
+	"short_name": "ГУАП Расписание",
+	"description": "ГУАП Расписание делает расписание занятий более красивым и удобным.",
+	"background": {
+		"service_worker": "background.js"
+	},
+	"permissions": [
+		"storage",
+		"tabs"
+	],
+	"host_permissions": [
+		"https://api.guap.ru/rasp/*"
+	],
+	"action": {},
+	"commands": {
+		"openApp": {
+			"suggested_key": {
+				"default": "Alt+T"
+			},
+			"description": "Открыть расписание"
+		}
+	},
+	"icons": {
+		"16": "img/icon-16.png",
+		"32": "img/icon-32.png",
+		"48": "img/icon-48.png",
+		"64": "img/icon-64.png",
+		"128": "img/icon-128.png",
+		"256": "img/icon-256.png",
+		"512": "img/icon-512.png",
+		"1024": "img/icon-1024.png"
+	}
+}
