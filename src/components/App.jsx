@@ -4,6 +4,7 @@ import { CSSTransition } from 'react-transition-group';
 import Aside from "components/Aside.jsx"
 import TimeTable from "components/TimeTable.jsx"
 import SettingsPanel from "components/SettingsPanel.jsx"
+import NoInternetMessage from "components/NoInternetMessage.jsx"
 
 import SettingsContext from "components/SettingsContext.js";
 
@@ -23,6 +24,7 @@ class App extends React.Component {
 
     state = {
         title: "Расписание занятий",
+        isInternetAvailable: false,
         isReady: false,
         isLoadingInfo: true,
         isLoadingTimetable: false,
@@ -42,6 +44,7 @@ class App extends React.Component {
 
         this.module_loaded = this.module_loaded.bind(this);
         this.keyPressed = this.keyPressed.bind(this);
+        this.internetAvailabilityChanged = this.internetAvailabilityChanged.bind(this);
         this.initialDataLoaded = this.initialDataLoaded.bind(this);
         // Chrome Storage
         this.onChromeStorageChange = this.onChromeStorageChange.bind(this)
@@ -58,6 +61,7 @@ class App extends React.Component {
         this.asideRef = React.createRef();
 
         //seting default state
+        this.state.isInternetAvailable = window.navigator.onLine;
         this.state.settings = {
             changeSetting: this.changeSetting,
             list: Object.assign(config.settings.default)
@@ -73,10 +77,12 @@ class App extends React.Component {
         };
         //data loading
         chrome.storage.sync.get("settings", this.settingsLoaded);
-        helperFunctions.requestInitialData().then(this.initialDataLoaded);
+        if (this.state.isInternetAvailable) helperFunctions.requestInitialData().then(this.initialDataLoaded);
     }
 
     componentDidMount() {
+        window.addEventListener('online', this.internetAvailabilityChanged);
+        if (!this.state.isInternetAvailable) return;
         this.gridRef.current.parentElement.setAttribute("data-theme", config.settings.default.theme);
         chrome.storage.onChanged.addListener(this.onChromeStorageChange);
         document.addEventListener("keydown", this.keyPressed);
@@ -84,11 +90,14 @@ class App extends React.Component {
     }
 
     componentWillUnmount() {
+        window.removeEventListener('online', this.internetAvailabilityChanged);
+        if (!this.state.isInternetAvailable) return;
         chrome.storage.onChanged.removeListener(this.onChromeStorageChange);
         document.removeEventListener("keydown", this.keyPressed);
     }
 
     componentDidUpdate() {
+        if (!this.state.isInternetAvailable) return;
         this.gridRef.current.parentElement.setAttribute("data-theme", this.state.settings.list.theme);
     }
 
@@ -103,6 +112,11 @@ class App extends React.Component {
         if (e.keyCode != 27) return;
         Saver.clear.additionalInfo();
         this.setState({ additionalInfoId: null });
+    }
+
+    internetAvailabilityChanged() {
+        if (!this.state.isInternetAvailable && window.navigator.onLine)
+            document.location.reload();
     }
 
     async initialDataLoaded(data) {
@@ -207,6 +221,8 @@ class App extends React.Component {
     }
 
     render() {
+        if (!this.state.isInternetAvailable) return (<NoInternetMessage />);
+
         return (<SettingsContext.Provider value={this.state.settings}>
             <div className="grid" ref={this.gridRef}>
                 {this.renderHeader()}

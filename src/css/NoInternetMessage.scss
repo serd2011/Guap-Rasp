@@ -1,0 +1,30 @@
+$blue: #005aaa;
+$pink: #e72b70;
+
+.NoInternetMessage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.27), rgba(0, 0, 0, 0.5)),
+        radial-gradient(circle, transparent 50%, #000 150%), linear-gradient(130deg, $blue 20%, $pink 80%);
+
+    .message {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        padding: 20px;
+        background-color: #eaecef;
+        border-radius: 5px;
+
+        h1 {
+            color: $pink;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            color: $blue;
+        }
+    }
+}
