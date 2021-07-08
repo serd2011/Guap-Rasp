@@ -4,7 +4,7 @@
   "description": "Проект, направленный на упрощение просмотра и улучшение внешнего вида расписания при просмотре с ПК",
   "scripts": {
     "build": "webpack --config webpack/webpack.config.prod.js",
-    "dev": "concurrently \"npm:watch\" \"npm:devtools\"",
+    "dev": "concurrently \"npm:watch -- --env=devtools=true \" \"npm:devtools\"",
     "watch": "webpack --config webpack/webpack.config.dev.js --watch",
     "devtools": "react-devtools"
   },
