@@ -230,7 +230,8 @@ class App extends React.Component {
                     onWeekChange={this.onWeekChange}
                     onSearch={this.onSearch}
                     isLoading={this.state.isLoadingInfo}
-                    isWeekUp={this.state.initialInfo.IsWeekUp}
+                    isCurrentWeekUp={this.state.initialInfo.IsWeekUp}
+                    isWeekUp={this.state.isWeekUp}
                     isEnabled={!this.state.isLoadingTimetable}
                     search={this.state.search}
                     info={this.state.info}

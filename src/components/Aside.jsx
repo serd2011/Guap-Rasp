@@ -67,7 +67,7 @@ class Aside extends React.Component {
         let date = current_datetime.getDate();
         let month = config.month_names_in_genitive[current_datetime.getMonth()];
         let year = current_datetime.getFullYear();
-        return (`${this.props.isWeekUp ? "▲" : "▼"} ${week}, ${date} ${month} ${year} года`)
+        return (`${this.props.isCurrentWeekUp ? "▲" : "▼"} ${week}, ${date} ${month} ${year} года`)
     }
 
     weekChange(newValue) {
@@ -115,7 +115,7 @@ class Aside extends React.Component {
 
     render() {
         return (<aside>
-            <div className={`date ${this.props.isWeekUp ? "up" : "down"}`}>{this.getCurrentDate()}</div>
+            <div className={`date ${this.props.isCurrentWeekUp ? "up" : "down"}`}>{this.getCurrentDate()}</div>
             <Switch type="big" labels={["Нижняя", "Верхняя"]} value={this.props.isWeekUp} onChange={this.weekChange} />
             <SearchBlock onSubmit={this.onSearch}
                 search={this.props.search}

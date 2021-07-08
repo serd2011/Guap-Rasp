@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 
 import "css/controls.scss";
 
-export class Switch extends React.Component {
+export class Switch extends React.PureComponent {
 
     state = { isChecked: this.props.value || false };
 
@@ -48,7 +48,7 @@ export class Switch extends React.Component {
     }
 }
 
-export class Select extends React.Component {
+export class Select extends React.PureComponent {
     state = { isActive: false, wasInvalid: false, selectedIndex: 0, partialInput: "" };
 
     constructor(props) {
