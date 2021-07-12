@@ -18,7 +18,7 @@ class SearchBlock extends React.Component {
     render() {
         return <div className="SearchBlock">
             <div>
-                <Select hasSearch placeholder="Группа"
+                <Select hasSearch showOptionsOnFocus placeholder="Группа"
                     value={this.props.search.isGroup ? this.props.search.id : null}
                     onChange={this.onChangeSelect.bind(this, true)}
                     options={this.props.groupsList}
@@ -26,7 +26,7 @@ class SearchBlock extends React.Component {
                 />
             </div>
             <div>
-                <Select hasSearch placeholder="Преподаватель"
+                <Select hasSearch showOptionsOnFocus placeholder="Преподаватель"
                     value={!this.props.search.isGroup ? this.props.search.id : null}
                     onChange={this.onChangeSelect.bind(this, false)}
                     options={this.props.prepsList}

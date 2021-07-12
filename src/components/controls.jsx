@@ -86,12 +86,14 @@ export class Select extends React.PureComponent {
             return;
         }
         let options = this.selectOptions.current;
-        let rect = options.getBoundingClientRect();
-        options.style.maxHeight = Math.min((window.innerHeight - rect.top - 50), this.props.maxOptionsHeight) + "px";
-        if (options.scrollHeight > options.clientHeight) {
-            options.parentElement.classList.add("needInnerShadow");
-        } else {
-            options.parentElement.classList.remove("needInnerShadow");
+        if (options !== null) {
+            let rect = options.getBoundingClientRect();
+            options.style.maxHeight = Math.min((window.innerHeight - rect.top - 50), this.props.maxOptionsHeight) + "px";
+            if (options.scrollHeight > options.clientHeight) {
+                options.parentElement.classList.add("needInnerShadow");
+            } else {
+                options.parentElement.classList.remove("needInnerShadow");
+            }
         }
     }
 
@@ -165,36 +167,48 @@ export class Select extends React.PureComponent {
         return this.props.options.findIndex((element, index, array) => { return element.label == label });
     }
 
+    renderOptions() {
+        if (this.state.wasInvalid) return;
+        if (!this.props.showOptionsOnFocus && (this.state.partialInput == "")) return;
+        return (
+            <div className="select-options-wrapper">
+                <div className="select-options" ref={this.selectOptions}>
+                    {this.props.options.map(item => {
+                        if (this.state.partialInput == "" || item.label.toLowerCase().includes(this.state.partialInput.toLowerCase())) {
+                            return (<div key={item.value} onMouseDown={this.onMouseDownElement}>{item.label}</div>)
+                        }
+                    })}
+                </div>
+            </div>
+        );
+    }
+
     render() {
         if (!this.props.hasSearch) {
-            return (<div className={`select ${this.state.isActive ? "active" : ""}`}>
-                <div className="select-head" onClick={this.onClickHead}>{this.props.options[this.state.selectedIndex].label}</div>
-                <div className="select-options">
-                    {this.props.options.map((item) =>
-                        <div key={item.value} onClick={this.onMouseDownElement}>{item.label}</div>
-                    )}
-                </div>
-            </div>)
-        } else {
-            return (<div className={`select-search ${this.state.isActive ? "active" : ""}`} onFocus={this.onFocusInput}>
-                <input type="text" autoComplete="off" ref={this.inputRef}
-                    className={`${(this.getIndexByLabel(this.state.partialInput) !== -1) ? "valid" : ""}`}
-                    value={this.state.partialInput}
-                    placeholder={this.props.placeholder}
-                    disabled={this.props.disabled}
-                    onChange={this.onChangeInput}
-                    onKeyDown={this.onKeyDownInput}
-                />
-                <div className="select-options-wrapper">
-                    <div className="select-options" ref={this.selectOptions}>
-                        {!this.state.wasInvalid && this.props.options.map(item => {
-                            if (this.state.partialInput == "" || item.label.toLowerCase().includes(this.state.partialInput.toLowerCase())) {
-                                return (<div key={item.value} onMouseDown={this.onMouseDownElement}>{item.label}</div>)
-                            }
-                        })}
+            return (
+                <div className={`select ${this.state.isActive ? "active" : ""}`}>
+                    <div className="select-head" onClick={this.onClickHead}>{this.props.options[this.state.selectedIndex].label}</div>
+                    <div className="select-options">
+                        {this.props.options.map((item) =>
+                            <div key={item.value} onClick={this.onMouseDownElement}>{item.label}</div>
+                        )}
                     </div>
                 </div>
-            </div>)
+            )
+        } else {
+            return (
+                <div className={`select-search ${this.state.isActive ? "active" : ""}`} onFocus={this.onFocusInput}>
+                    <input type="text" autoComplete="off" ref={this.inputRef}
+                        className={`${(this.getIndexByLabel(this.state.partialInput) !== -1) ? "valid" : ""}`}
+                        value={this.state.partialInput}
+                        placeholder={this.props.placeholder}
+                        disabled={this.props.disabled}
+                        onChange={this.onChangeInput}
+                        onKeyDown={this.onKeyDownInput}
+                    />
+                    {this.renderOptions()}
+                </div>
+            )
         }
     }
 }
