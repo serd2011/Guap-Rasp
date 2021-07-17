@@ -12,9 +12,6 @@
 		"storage",
 		"tabs"
 	],
-	"host_permissions": [
-		"https://api.guap.ru/rasp/*"
-	],
 	"action": {},
 	"commands": {
 		"openApp": {
