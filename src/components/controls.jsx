@@ -110,7 +110,7 @@ export class Select extends React.PureComponent {
                 isActive: false,
             });
         } else {
-            this.onLoseFocusSelectSearch();
+            this.onClose();
         }
     }
 
@@ -139,7 +139,8 @@ export class Select extends React.PureComponent {
         this.setState({ isActive: true, wasInvalid: false });
     }
 
-    onLoseFocusSelectSearch() {
+    onClose() {
+        let prevValueIndex = this.state.selectedIndex;
         let newValueIndex = this.getIndexByLabel(this.state.partialInput);
         let newValue = newValueIndex == -1 ? "" : this.props.options[newValueIndex].label;
         let wasInvalid = (this.state.partialInput !== "") && (newValueIndex == -1);
@@ -149,7 +150,8 @@ export class Select extends React.PureComponent {
             partialInput: newValue,
             wasInvalid: wasInvalid
         });
-        this.props.onChange(newValueIndex == -1 ? null : this.props.options[newValueIndex].value);
+        if (newValueIndex !== prevValueIndex)
+            this.props.onChange(newValueIndex == -1 ? null : this.props.options[newValueIndex].value);
     }
 
     onChangeInput(e) {
@@ -159,7 +161,7 @@ export class Select extends React.PureComponent {
     onKeyDownInput(e) {
         if (e.key == "Enter") {
             this.inputRef.current.blur();
-            this.onLoseFocusSelectSearch();
+            this.onClose();
         }
     }
 
