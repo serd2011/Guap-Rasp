@@ -8,9 +8,8 @@ import NoInternetMessage from "components/NoInternetMessage.jsx"
 
 import SettingsContext from "components/SettingsContext.js";
 
-import Saver from "js/Saver.js";
+import Storage from "js/Storage.js";
 import * as helperFunctions from "js/helperFunctions.js";
-import chromeStoragePromise from "js/chrome-storage-promise.js";
 
 import config from "config.json"
 
@@ -46,8 +45,7 @@ class App extends React.Component {
         this.keyPressed = this.keyPressed.bind(this);
         this.internetAvailabilityChanged = this.internetAvailabilityChanged.bind(this);
         this.initialDataLoaded = this.initialDataLoaded.bind(this);
-        // Chrome Storage
-        this.onChromeStorageChange = this.onChromeStorageChange.bind(this)
+        // Storage
         this.onDeleteAll = this.onDeleteAll.bind(this);
         // Settings
         this.settingsLoaded = this.settingsLoaded.bind(this);
@@ -76,7 +74,7 @@ class App extends React.Component {
             Years: ""
         };
         //data loading
-        chrome.storage.sync.get("settings", this.settingsLoaded);
+        Storage.getSettings().then(this.settingsLoaded);
         if (this.state.isInternetAvailable) helperFunctions.requestInitialData().then(this.initialDataLoaded);
     }
 
@@ -84,7 +82,7 @@ class App extends React.Component {
         window.addEventListener('online', this.internetAvailabilityChanged);
         if (!this.state.isInternetAvailable) return;
         this.gridRef.current.parentElement.setAttribute("data-theme", config.settings.default.theme);
-        chrome.storage.onChanged.addListener(this.onChromeStorageChange);
+        Storage.subscribe("settings.changed", this.settingsLoaded);
         document.addEventListener("keydown", this.keyPressed);
         setTimeout(this.module_loaded, config.main_preloader_timeout, "timeout");
     }
@@ -92,7 +90,7 @@ class App extends React.Component {
     componentWillUnmount() {
         window.removeEventListener('online', this.internetAvailabilityChanged);
         if (!this.state.isInternetAvailable) return;
-        chrome.storage.onChanged.removeListener(this.onChromeStorageChange);
+        Storage.unSubscribe("settings.changed", this.settingsLoaded);
         document.removeEventListener("keydown", this.keyPressed);
     }
 
@@ -110,7 +108,7 @@ class App extends React.Component {
 
     keyPressed(e) {
         if (e.keyCode != 27) return;
-        Saver.clear.additionalInfo();
+        Storage.clearAdditionalInfo();
         this.setState({ additionalInfoId: null });
     }
 
@@ -134,23 +132,15 @@ class App extends React.Component {
         });
         //this.module_loaded("info");
         if (this.state.settings.list["save-request"]) {
-            let stored = await Saver.load();
+            let stored = await Storage.getSavedState();
             if ("request" in stored) await this.onSearch(stored.request.id, (stored.request.type == 1));
             if ("additionalInfo" in stored) this.onLessonClick(stored.additionalInfo);
         }
     }
 
-    // Chrome Storage
-
-    onChromeStorageChange(changes, area) {
-        if (area === 'sync' && changes.settings?.newValue) {
-            this.settingsLoaded({ settings: changes.settings.newValue });
-        }
-    }
-
+    // Storage
     async onDeleteAll() {
-        await chromeStoragePromise.local.clear();
-        await chromeStoragePromise.sync.clear();
+        await Storage.clear();
         document.location.reload();
     }
 
@@ -162,7 +152,7 @@ class App extends React.Component {
                 ...state.settings,
                 list: {
                     ...state.settings.list,
-                    ...data.settings
+                    ...data
                 }
             }
         }));
@@ -180,7 +170,7 @@ class App extends React.Component {
                 list: newList
             }
         }));
-        chrome.storage.sync.set({ settings: newList });
+        Storage.saveSettings(newList);
     }
 
     // App events
@@ -188,10 +178,10 @@ class App extends React.Component {
     async onSearch(id, isGroup) {
         if (id == null) {
             this.setState({ search: { id: id, isGroup: isGroup }, data: { timetable: [], additionalLessons: [] } });
-            Saver.clear.request();
+            Storage.clearRequest();
             return;
         }
-        Saver.save.request(id, (isGroup ? 1 : 2));
+        Storage.saveRequest(id, (isGroup ? 1 : 2));
         this.setState({ search: { id: id, isGroup: isGroup }, data: { timetable: [], additionalLessons: [] }, isLoadingTimetable: true });
         let { timetable, additionalLessons } = await helperFunctions.requestTimeTable(id, isGroup);
         this.setState({ data: { timetable: timetable, additionalLessons: additionalLessons }, additionalInfoId: null, isLoadingTimetable: false });
@@ -204,7 +194,7 @@ class App extends React.Component {
     onLessonClick(id) {
         this.asideRef.current.showAdditionalInfo();
         if (this.state.additionalInfoId == id) return;
-        Saver.save.additionalInfo(id);
+        Storage.saveAdditionalInfo(id);
         this.setState({ additionalInfoId: id });
     }
 

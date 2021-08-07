@@ -1,4 +1,5 @@
 {
+    "storage_version": 1,
     "main_preloader_timeout": 200,
     "build_short_names": {
         "Гастелло 15": "Гаст.",
