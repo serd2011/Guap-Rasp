@@ -7,14 +7,15 @@ class Storage extends Subscriptable {
 
     constructor() {
         super();
+
+        this.onChromeStorageChange = this.onChromeStorageChange.bind(this);
+
         this.init();
     }
 
     async init() {
-        this.onChromeStorageChange = this.onChromeStorageChange.bind(this);
-
-        let result = await chromeStoragePromise.local.get("storage_version");
-        if (!("storage_version" in result) || result.storage_version !== config.storage_version) {
+        let stored = await chromeStoragePromise.local.get("storage_version");
+        if (!("storage_version" in stored) || stored.storage_version !== config.storage_version) {
             await this.clear();
             await chromeStoragePromise.local.set({ storage_version: config.storage_version });
         }
@@ -27,9 +28,9 @@ class Storage extends Subscriptable {
     }
 
     async getSettings() {
-        let result = await chromeStoragePromise.sync.get("settings");
-        if (!("settings" in result)) return {}
-        return result.settings;
+        let stored = await chromeStoragePromise.sync.get("settings");
+        if (!("settings" in stored)) return {}
+        return stored.settings;
     }
 
     async saveSettings(newSettings) {
@@ -43,17 +44,17 @@ class Storage extends Subscriptable {
     }
 
     async saveRequest(id, type) {
-        let result = await chromeStoragePromise.local.get("saved_state");
-        let saved_state = ("saved_state" in result) ? result.saved_state : {};
+        let stored = await chromeStoragePromise.local.get("saved_state");
+        let saved_state = ("saved_state" in stored) ? stored.saved_state : {};
         saved_state["request"] = { "id": id, "type": type };
-        chrome.storage.local.set({ "saved_state": saved_state });
+        await chromeStoragePromise.local.set({ "saved_state": saved_state });
     }
 
     async saveAdditionalInfo(id) {
-        let result = await chromeStoragePromise.local.get("saved_state");
-        let saved_state = ("saved_state" in result) ? result.saved_state : {};
-        result.saved_state["additional_inf"] = id;
-        chrome.storage.local.set({ "saved_state": saved_state });
+        let stored = await chromeStoragePromise.local.get("saved_state");
+        let saved_state = ("saved_state" in stored) ? stored.saved_state : {};
+        stored.saved_state["additional_inf"] = id;
+        await chromeStoragePromise.local.set({ "saved_state": saved_state });
     }
 
     async clearRequest() {
@@ -79,6 +80,25 @@ class Storage extends Subscriptable {
         }
         if (stored.saved_state.additional_inf) result["additionalInfo"] = stored.saved_state.additional_inf;
         return result;
+    }
+
+    async getLastUpdate() {
+        let stored = await chromeStoragePromise.local.get("last_update");
+        return stored.last_update;
+    }
+
+    async saveLastUpdate(update) {
+        await chromeStoragePromise.local.set({ "last_update": update });
+    }
+
+    async getGroupsPrepsLists() {
+        let stored = await chromeStoragePromise.local.get(["groupsPrepsLists"]);
+        if (!stored.groupsPrepsLists) return null;
+        return { groups: stored.groupsPrepsLists.groups, preps: stored.groupsPrepsLists.preps };
+    }
+
+    async saveGroupsPrepsLists(groups, preps) {
+        await chromeStoragePromise.local.set({ "groupsPrepsLists": { "groups": groups, "preps": preps } });
     }
 
 }

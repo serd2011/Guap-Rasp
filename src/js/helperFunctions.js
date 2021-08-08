@@ -1,17 +1,17 @@
 import axios from "axios";
 
-import chromeStoragePromise from "js/chrome-storage-promise.js";
+import Storage from "js/Storage.js"
 
 import config from "config.json"
 
 export async function requestInitialData() {
     let response = await axios.get(config.url.info.initial);
     let initialData = response.data;
-    let stored = await chromeStoragePromise.local.get("lastUpdate");
+    let lastUpdate = await Storage.getLastUpdate();
     let groupsList = {};
     let prepsList = {};
-    if (!stored.lastUpdate || (stored.lastUpdate.Update != initialData.Update)) {
-        chrome.storage.local.set({ lastUpdate: initialData });
+    if (lastUpdate != initialData.Update) {
+        Storage.saveLastUpdate(initialData.Update);
         //Получаем список групп            
         let groupsResponse = await axios(config.url.info.groups);
         let groupsData = groupsResponse.data;
@@ -30,9 +30,9 @@ export async function requestInitialData() {
             };
         }
         //Сохраняем            
-        chrome.storage.local.set({ "groups": groupsList, "preps": prepsList });
+        Storage.saveGroupsPrepsLists(groupsList, prepsList);
     } else {
-        let data = await chromeStoragePromise.local.get(["groups", "preps"]);
+        let data = await Storage.getGroupsPrepsLists();
         groupsList = data.groups;
         prepsList = data.preps;
     }
