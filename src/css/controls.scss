@@ -102,11 +102,10 @@
         &::after {
             content: "";
             position: absolute;
-            width: $height;
-            height: $height;
+            width: $height + $butExtra * 2;
+            height: $height + $butExtra * 2;
             background-color: var(--switch-but-off);
             border-radius: 50%;
-            padding: $butExtra;
             top: -$butExtra;
             left: -$butExtra;
             transition: left 0.2s ease-in-out, background-color 0.2s ease-in-out, transform 0.1s;
