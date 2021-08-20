@@ -4,6 +4,23 @@ import Storage from "js/Storage.js"
 
 import config from "config.json"
 
+/**
+ * @typedef InitialData
+ * @type {object}
+ * @property {number} CurrentWeek
+ * @property {boolean} IsAutumn
+ * @property {boolean} IsWeekOdd
+ * @property {boolean} IsWeekRed
+ * @property {boolean} IsWeekUp
+ * @property {string} Update
+ * @property {string} Years
+ */
+
+/**
+ * Returns initial data, groups and preps
+ * 
+ * @returns {Promise<{initialInfo:InitialData,groups:Object.<number,string>,preps:Object.<number,{short:string,full:string}>}>}
+ */
 export async function requestInitialData() {
     let response = await axios.get(config.url.info.initial);
     let initialData = response.data;
@@ -39,6 +56,38 @@ export async function requestInitialData() {
     return ({ initialInfo: initialData, groups: groupsList, preps: prepsList });
 }
 
+/**
+ * @typedef Lesson
+ * @type {object}
+ * @property {number} id
+ * @property {number} week
+ * @property {number} day
+ * @property {number} num
+ * @property {string} type
+ * @property {string} name
+ * @property {string} rooms
+ * @property {{full: string, short: string}} build
+ * @property {Array.<number>} groupsIds
+ * @property {Array.<number>} prepsIds
+ */
+
+/**
+ * @typedef AdditionalLesson
+ * @type {object}
+ * @property {number} id
+ * @property {string} type
+ * @property {string} name
+ * @property {string} dept
+ */
+
+/**
+ * Returns TimeTable and additional lessons for specified id
+ * 
+ * @param {number} id 
+ * @param {boolean} isGroup 
+ * 
+ * @returns {Promise<{timetable:Object.<number,Lesson>,additionalLessons:Array.<AdditionalLesson>}>}
+ */
 export async function requestTimeTable(id, isGroup) {
     let requestUrl = config.url.timetable[(isGroup ? "group" : "prep")] + id;
     let response = await axios(requestUrl);

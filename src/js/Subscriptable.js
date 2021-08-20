@@ -1,6 +1,9 @@
 
 export default class Subscriptable {
 
+    /**
+     * Construcs Subscriptable object
+     */
     constructor() {
         this.dispatch = this.dispatch.bind(this);
         this.subscribe = this.subscribe.bind(this);
@@ -9,6 +12,12 @@ export default class Subscriptable {
         this.events = {};
     }
 
+    /**
+     * Dispatches specified event with data to all subscripted handlers
+     * 
+     * @param {string} event 
+     * @param {any} data 
+     */
     dispatch(event, data) {
         let handlersArray = this.events[event];
         if (!handlersArray) return;
@@ -17,6 +26,18 @@ export default class Subscriptable {
         }
     }
 
+    /**
+     * @callback eventHandler
+     * @param {any} data event data
+     * @returns {void}
+     */
+
+    /**
+     * Subscribes handler to a specified event
+     * 
+     * @param {string} event 
+     * @param {eventHandler} handler
+     */
     subscribe(event, handler) {
         let handlersArray = this.events[event];
         if (!handlersArray) {
@@ -27,6 +48,14 @@ export default class Subscriptable {
         handlersArray.push(handler);
     }
 
+    /**
+     * Unsubscribes handler from a specified event
+     *
+     * @param {string} event
+     * @param {eventHandler} handler
+     * 
+     * @throws Error if handler wasn't previously subscribed
+     */
     unSubscribe(event, handler) {
         let handlersArray = this.events[event];
         if (!handlersArray) throw new Error("handler does not present");

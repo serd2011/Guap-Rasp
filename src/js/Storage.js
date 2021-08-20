@@ -5,6 +5,11 @@ import config from "config.json"
 
 class Storage extends Subscriptable {
 
+    /**
+     * Construcs Storage object 
+     * 
+     * Calls {@link Storage#init} function
+     */
     constructor() {
         super();
 
@@ -13,6 +18,13 @@ class Storage extends Subscriptable {
         this.init();
     }
 
+    /**
+     * Checks version and adds Listener to chrome.storage
+     * 
+     * Method is called in {@link Storage#constructor}. Present only because constructors can't be async.
+     * 
+     * @private
+     */
     async init() {
         let stored = await chromeStoragePromise.local.get("storage_version");
         if (!("storage_version" in stored) || stored.storage_version !== config.storage_version) {
@@ -22,17 +34,30 @@ class Storage extends Subscriptable {
         chrome.storage.onChanged.addListener(this.onChromeStorageChange);
     }
 
+    /**
+     * Clears all storage
+     */
     async clear() {
         await chromeStoragePromise.local.clear();
         await chromeStoragePromise.sync.clear();
     }
 
+    /**
+     * Retrieves settings from storage
+     * 
+     * @returns {Promise<Object.<string,any>>} stored settings
+     */
     async getSettings() {
         let stored = await chromeStoragePromise.sync.get("settings");
         if (!("settings" in stored)) return {}
         return stored.settings;
     }
 
+    /**
+     * Stores setting
+     * 
+     * @param {Object.<string,any>} newSettings 
+     */
     async saveSettings(newSettings) {
         await chromeStoragePromise.sync.set({ settings: newSettings });
     }
@@ -43,6 +68,12 @@ class Storage extends Subscriptable {
         }
     }
 
+    /**
+     * Stores request
+     * 
+     * @param {number} id 
+     * @param {number} type
+     */
     async saveRequest(id, type) {
         let stored = await chromeStoragePromise.local.get("saved_state");
         let saved_state = ("saved_state" in stored) ? stored.saved_state : {};
@@ -50,6 +81,11 @@ class Storage extends Subscriptable {
         await chromeStoragePromise.local.set({ "saved_state": saved_state });
     }
 
+    /**
+     * Stores additional info
+     *  
+     * @param {number} id 
+     */
     async saveAdditionalInfo(id) {
         let stored = await chromeStoragePromise.local.get("saved_state");
         let saved_state = ("saved_state" in stored) ? stored.saved_state : {};
@@ -57,10 +93,16 @@ class Storage extends Subscriptable {
         await chromeStoragePromise.local.set({ "saved_state": saved_state });
     }
 
+    /**
+     * Clears stored request and additional info
+     */
     async clearRequest() {
         await chromeStoragePromise.local.remove("saved_state");
     }
 
+    /**
+     * Clears stored additional info
+     */
     async clearAdditionalInfo() {
         let result = await chromeStoragePromise.local.get("saved_state");
         if ("saved_state" in result)
@@ -68,6 +110,11 @@ class Storage extends Subscriptable {
                 await chromeStoragePromise.local.set({ "saved_state": { "request": result.saved_state.request } })
     }
 
+    /**
+     * Retrieves saved state(request and additional info) from storage
+     * 
+     * @returns {Promise<{request:{id:number,type:number},additionalInfo?:number}>} saved state
+     */
     async getSavedState() {
         let stored = await chromeStoragePromise.local.get("saved_state");
         if (!("saved_state" in stored)) return {};
@@ -82,21 +129,42 @@ class Storage extends Subscriptable {
         return result;
     }
 
+    /**
+     * Retrieves last update date from storage
+     * 
+     * @returns {Promise<string>}
+     */
     async getLastUpdate() {
         let stored = await chromeStoragePromise.local.get("last_update");
         return stored.last_update;
     }
 
+    /**
+     * Saves last update date
+     * 
+     * @param {string} update 
+     */
     async saveLastUpdate(update) {
         await chromeStoragePromise.local.set({ "last_update": update });
     }
 
+    /**
+     * Retrieves groups and preps from storage
+     * 
+     * @returns {Promise<{groups:Object.<number,string>,preps:Object.<number,{short:string,full:string}>}>} groups and preps 
+     */
     async getGroupsPrepsLists() {
         let stored = await chromeStoragePromise.local.get(["groupsPrepsLists"]);
         if (!stored.groupsPrepsLists) return null;
         return { groups: stored.groupsPrepsLists.groups, preps: stored.groupsPrepsLists.preps };
     }
 
+    /**
+     * Saves groups and preps
+     * 
+     * @param {Object.<number,string>} groups
+     * @param {Object.<number,{short:string,full:string}>} preps
+     */
     async saveGroupsPrepsLists(groups, preps) {
         await chromeStoragePromise.local.set({ "groupsPrepsLists": { "groups": groups, "preps": preps } });
     }
