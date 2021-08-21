@@ -11,7 +11,7 @@ async function openApp() {
 	let tabs = await chrome.tabs.query({ url: appUrl });
 
 	if (tabs.length === 0)
-		return chrome.tabs.create({ url: appUrl }, function (tab) { tab_id = tab.id; });
+		return chrome.tabs.create({ url: appUrl });
 
 	let currentWindow = await chrome.windows.getCurrent();
 	for (let tab of tabs) {
