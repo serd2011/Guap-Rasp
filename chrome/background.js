@@ -14,10 +14,15 @@ async function openApp() {
 		return chrome.tabs.create({ url: appUrl });
 
 	let currentWindow = await chrome.windows.getCurrent();
+	let tabId = tabs[0].id;
+	let windowId = tabs[0].windowId;
 	for (let tab of tabs) {
-		if (tab.windowId == currentWindow.id)
-			return chrome.tabs.update(tab.id, { active: true });
+		if (tab.windowId == currentWindow.id) {
+			tabId = tab.id;
+			windowId = tab.windowId;
+			break;
+		}
 	}
-	chrome.tabs.update(tabs[0].id, { active: true });
-	chrome.windows.update(tabs[0].windowId, { focused: true });
+	chrome.tabs.update(tabId, { active: true });
+	chrome.windows.update(windowId, { focused: true });
 }
