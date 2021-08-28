@@ -16,7 +16,6 @@
 	position: relative;
 	height: max-content;
 	min-height: 100vh;
-	font-size: 12px;
 	z-index: 0;
 }
 
@@ -68,7 +67,7 @@
 
 .title {
 	grid-area: title;
-	font-size: 20px;
+	font-size: 1.25rem;
 	color: var(--header-text);
 	display: flex;
 	align-items: center;

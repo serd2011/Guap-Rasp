@@ -43,7 +43,7 @@ article {
 
     .lesson {
         display: grid;
-        grid-template-columns: 25px 1fr;
+        grid-template-columns: 1.5625rem 1fr;
         grid-template-areas: "time time" "type lesson" "type classroom";
         gap: 2px 5px;
         margin: auto;
@@ -53,14 +53,14 @@ article {
 
         .time {
             grid-area: time;
-            font-size: 10px;
+            font-size: 0.625rem;
             text-align: left;
             color: var(--lesson-time);
         }
 
         .type {
             grid-area: type;
-            font-size: 18px;
+            font-size: 1.125rem;
             text-align: left;
             align-self: center;
             color: var(--lesson-type);
@@ -68,13 +68,13 @@ article {
 
         .name {
             grid-area: lesson;
-            font-size: 12px;
+            font-size: 0.75rem;
             text-align: left;
         }
 
         .classroom {
             grid-area: classroom;
-            font-size: 11px;
+            font-size: 0.6875rem;
             text-align: left;
             color: var(--lesson-classroom);
         }
