@@ -97,7 +97,7 @@ class Aside extends React.Component {
             preps: this.props.additionalInfo.prepsIds.map((prepId) => {
                 return ({
                     id: prepId,
-                    name: this.props.info.preps[prepId][(this.context.list["full-prep"] ? "full" : "short")]
+                    name: this.props.info.preps[prepId]?.[(this.context.list["full-prep"] ? "full" : "short")]
                 });
             })
         };
