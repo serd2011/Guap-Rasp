@@ -19,10 +19,6 @@
 	z-index: 0;
 }
 
-.display_none {
-	display: none !important;
-}
-
 .down {
 	color: var(--text-date-down);
 }
@@ -30,8 +26,6 @@
 .up {
 	color: var(--text-date-up);
 }
-
-/*основа*/
 
 .grid {
 	display: grid;
@@ -51,37 +45,35 @@
 	@media (min-height: 1080px) {
 		min-height: 1080px;
 	}
-}
 
-/*Шапка*/
+	> .header-background {
+		left: 0;
+		position: absolute;
+		height: 50px;
+		width: 100%;
+		min-width: 1200px;
+		background-color: var(--header-background);
+		z-index: -1;
+	}
 
-.header-background {
-	left: 0;
-	position: absolute;
-	height: 50px;
-	width: 100%;
-	min-width: 1200px;
-	background-color: var(--header-background);
-	z-index: -1;
-}
+	> .title {
+		grid-area: title;
+		font-size: 1.25rem;
+		color: var(--header-text);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
 
-.title {
-	grid-area: title;
-	font-size: 1.25rem;
-	color: var(--header-text);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
+	> .logo {
+		grid-area: logo;
+		display: block;
+		text-align: center;
+		padding: 8px;
 
-.logo {
-	grid-area: logo;
-	display: block;
-	text-align: center;
-	padding: 8px;
-
-	img {
-		cursor: pointer;
-		height: 100%;
+		img {
+			cursor: pointer;
+			height: 100%;
+		}
 	}
 }
