@@ -59,7 +59,7 @@ export default class Subscriptable {
     unSubscribe(event, handler) {
         let handlersArray = this.events[event];
         if (!handlersArray) throw new Error("handler does not present");
-        if (handlersArray.includes(handler)) throw new Error("handler does not present");
+        if (!handlersArray.includes(handler)) throw new Error("handler does not present");
         this.events[event].splice(handlersArray.indexOf(handler), 1);
     }
 
