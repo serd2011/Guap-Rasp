@@ -1,0 +1,85 @@
+:root [data-theme="dark"] {
+    /* Темная тема  */
+    --color-black: #000;
+    --color-dark: #141414;
+    --color-dark-dark: #111111;
+    --color-background: #212121;
+    --color-white: #ccc;
+    --color-border: #414141;
+    --color-blue: #3589d4;
+    --color-dark-blue: #005aaa;
+    --color-pink: #ff4c8e;
+    --color-dark-pink: #e72b70;
+    --color-real-white: #fff;
+    /* Всякое */
+    --text-default: var(--color-white);
+    --body-background: var(--color-dark);
+    --header-background: var(--color-background);
+    --header-text: var(--color-blue);
+    /* Левые настроки */
+    --aside-background: var(--color-background);
+    --week-switch-unactive-color: var(--color-border);
+    --text-date-down: var(--color-blue);
+    --text-date-up: var(--color-pink);
+    --aside-block-border: var(--color-dark);
+    /* Кнопки */
+    --button-background: var(--color-dark-blue);
+    --button-disabled-background: var(--color-black);
+    --button-active: var(--color-dark-pink);
+    --button-color: var(--color-white);
+    --button-disabled-color: var(--color-border);
+    /* Поиск */
+    --search-input-background: var(--color-dark);
+    --search-input-valid-background: var(--color-dark-blue);
+    --search-input-color: var(--color-white);
+    --search-input-valid-color: var(--color-white);
+    --search-input-placeholer: var(--color-white);
+    /* Доп. Инфа */
+    --additional-inf-lesson-name: var(--color-blue);
+    --additional-inf-lesson-time: var(--color-pink);
+    --additional-inf-preps-name: var(--color-blue);
+    --additional-inf-group-number: var(--color-pink);
+    --additional-inf-rooms-number: var(--color-blue);
+    /* Ссылка на guap.rasp */
+    --info-sourse-label-color: var(--color-blue);
+    --info-sourse-label-link-color: var(--color-pink);
+    /* Само расписание */
+    --article-background: var(--color-background);
+    --article-borders: var(--color-dark);
+    --lesson-hover-background: var(--color-border);
+    --day-name: var(--color-blue);
+    --lesson-time: var(--color-blue);
+    --lesson-classroom: var(--color-pink);
+    --lesson-type: var(--color-white);
+    --lesson-box-shadow: var(--color-dark-dark);
+    /* Настройки */
+    --settings-button-open: var(--color-dark-dark);
+    --settings-button-close: var(--color-dark);
+    --settings-background: var(--color-background);
+    --settings-background-background: var(--color-black);
+    --settings-title: var(--color-blue);
+    --setting-delimiter: var(--color-dark-dark);
+    --settings-button-open-hover: var(--color-white);
+    --settings-button-close-hover: var(--color-dark-pink);
+    --settings-checkbox: var(--color-blue);
+    /* Переключатель */
+    --switch-background: var(--color-dark);
+    --switch-but-on: var(--color-dark-pink);
+    --switch-but-off: var(--color-black);
+    /* Селект */
+    --select-head-beckground: var(--color-dark-pink);
+    --select-head-color: var(--color-real-white);
+    --select-option-background: var(--color-dark-dark);
+    --select-option-color: var(--color-white);
+    --select-option-hover-background: var(--color-dark-pink);
+    --select-option-hover-color: var(--color-real-white);
+    /* Селект с поиском */
+    --select-search-option-color: var(--color-blue);
+    --select-search-option-background: var(--color-dark-dark);
+    --select-search-option-border: var(--color-border);
+    --select-search-option-hover-color: var(--color-white);
+    --select-search-option-hover-background: var(--color-dark-pink);
+    --select-search-opetions-innerShadow: var(--color-blue);
+    /* Прелоадер */
+    --preloader-fill: var(--color-dark-blue);
+}

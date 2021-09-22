@@ -1,0 +1,44 @@
+.additional_lessons {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    border: 1.5px solid var(--aside-block-border);
+    width: 226px;
+    position: relative;
+    padding: 10px 0;
+
+    > div {
+        display: grid;
+        width: 100%;
+        grid-template-columns: 25px 1fr;
+        grid-template-areas: "add_type add_lesson" "add_type add_classroom";
+        gap: 2px 5px;
+        padding: 10px 10px;
+        transition: box-shadow 0.1s ease-out;
+        &:hover {
+            box-shadow: 2px 2px 15px var(--lesson-box-shadow);
+            cursor: pointer;
+        }
+
+        .type {
+            grid-area: add_type;
+            font-size: 1.125rem;
+            text-align: left;
+            align-self: center;
+            color: var(--lesson-type);
+        }
+
+        .lesson {
+            grid-area: add_lesson;
+            font-size: 0.75rem;
+            text-align: left;
+        }
+
+        .classroom {
+            grid-area: add_classroom;
+            font-size: 0.6875rem;
+            text-align: left;
+            color: var(--lesson-classroom);
+        }
+    }
+}

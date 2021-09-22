@@ -1,0 +1,38 @@
+{
+  "name": "guap_rasp",
+  "version": "3.0",
+  "description": "Проект, направленный на упрощение просмотра и улучшение внешнего вида расписания при просмотре с ПК",
+  "scripts": {
+    "build": "webpack --config webpack/webpack.config.prod.js",
+    "dev": "concurrently \"npm:watch -- --env=devtools=true \" \"npm:devtools\"",
+    "watch": "webpack --config webpack/webpack.config.dev.js --watch",
+    "devtools": "react-devtools"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-transition-group": "^4.4.2"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
+    "@babel/preset-env": "^7.13.8",
+    "@babel/preset-react": "^7.12.13",
+    "babel-loader": "^8.2.2",
+    "clean-webpack-plugin": "^4.0.0-alpha.0",
+    "concurrently": "^6.2.0",
+    "copy-webpack-plugin": "^9.0.1",
+    "css-loader": "^5.1.0",
+    "html-webpack-plugin": "^5.3.1",
+    "mini-css-extract-plugin": "^1.6.0",
+    "node-sass": "^6.0.0",
+    "react-devtools": "^4.13.5",
+    "sass-loader": "^12.1.0",
+    "style-loader": "^3.0.0",
+    "webpack": "^5.24.2",
+    "webpack-cli": "^4.5.0",
+    "webpack-merge": "^5.8.0"
+  }
+}

@@ -1,0 +1,127 @@
+{
+    "storage_version": 1,
+    "main_preloader_timeout": 200,
+    "build_short_names": {
+        "Гастелло 15": "Гаст.",
+        "Б.Морская 67": "Б.М.",
+        "Ленсовета 14": "Ленс.",
+        "Московский 149в": "Моск.",
+        "Не опеределено": "Не опеределено"
+    },
+    "build_names_for_map": [
+        "Б.Морская 67",
+        "Б.М."
+    ],
+    "url": {
+        "guap_main": "https://new.guap.ru/",
+        "rasp_guap": "https://guap.ru/rasp/",
+        "info": {
+            "initial": "https://api.guap.ru/rasp/custom/get-sem-info",
+            "groups": "https://api.guap.ru/rasp/custom/get-sem-groups",
+            "preps": "https://api.guap.ru/rasp/custom/get-sem-preps"
+        },
+        "sputnik_map": "http://sputnik.guap.ru/nav/?src=%D0%B2%D1%85%D0%BE%D0%B4&dst=",
+        "timetable": {
+            "group": "https://api.guap.ru/rasp/custom/get-sem-rasp/group",
+            "prep": "https://api.guap.ru/rasp/custom/get-sem-rasp/prep"
+        }
+    },
+    "settings": {
+        "default": {
+            "theme": "light",
+            "save-request": true,
+            "full-prep": false,
+            "timetable-as-table": true,
+            "short-builds": true
+        },
+        "list": [
+            {
+                "name": "theme",
+                "title": "Тема",
+                "description": "Изменение темы оформления",
+                "type": "select",
+                "options": [
+                    {
+                        "name": "light",
+                        "title": "Светлая"
+                    },
+                    {
+                        "name": "dark",
+                        "title": "Темная"
+                    },
+                    {
+                        "name": "oldlight",
+                        "title": "Светлая (old)"
+                    }
+                ]
+            },
+            {
+                "name": "save-request",
+                "title": "Сохранять запрос при перезагрузке",
+                "description": "Загружает предыдущий запрос при запуске",
+                "type": "checkbox"
+            },
+            {
+                "name": "full-prep",
+                "title": "Показывать информацию о преподавателе",
+                "description": "Показывает должность преподавателя вместе с его именем",
+                "type": "checkbox"
+            },
+            {
+                "name": "timetable-as-table",
+                "title": "Отображать расписание в виде таблицы",
+                "description": "Расписание отображается в виде таблицы",
+                "type": "checkbox"
+            },
+            {
+                "name": "short-builds",
+                "title": "Сокращенные названия корпусов",
+                "description": "Отображаются сокращенные названия корпусов(зданий)",
+                "type": "checkbox"
+            }
+        ]
+    },
+    "pairs_time": [
+        "",
+        "1 пара (09:30-11:00)",
+        "2 пара (11:10-12:40)",
+        "3 пара (13:00-14:30)",
+        "4 пара (15:00-16:30)",
+        "5 пара (16:40-18:10)",
+        "6 пара (18:30-20:00)",
+        "7 пара (12:10-21:40)",
+        "8 пара (21:50-23:20)"
+    ],
+    "month_names_in_genitive": [
+        "января",
+        "февраля",
+        "марта",
+        "апреля",
+        "мая",
+        "июня",
+        "июля",
+        "августа",
+        "сентября",
+        "октября",
+        "ноября",
+        "декабря"
+    ],
+    "day_names": [
+        "Воскресенье",
+        "Понедельник",
+        "Вторник",
+        "Среда",
+        "Четверг",
+        "Пятница",
+        "Суббота"
+    ],
+    "day_short_names": [
+        "",
+        "Пн",
+        "Вт",
+        "Ср",
+        "Чт",
+        "Пт",
+        "Сб"
+    ]
+}

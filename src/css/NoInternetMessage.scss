@@ -1,0 +1,42 @@
+$blue: #005aaa;
+$pink: #e72b70;
+
+.NoInternetMessage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    padding: 16px;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.27), rgba(0, 0, 0, 0.5)),
+        radial-gradient(circle, transparent 50%, #000 150%), linear-gradient(130deg, $blue 20%, $pink 80%);
+
+    &:before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        padding: 16px;
+        background: url("img/iconTransparent.svg") center center no-repeat content-box;
+        opacity: 0.05;
+    }
+
+    .message {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        gap: 10px;
+
+        h1 {
+            color: #fff;
+            font-size: 1.875rem;
+        }
+
+        h3 {
+            color: #ccc;
+            font-size: 1rem;
+        }
+    }
+}

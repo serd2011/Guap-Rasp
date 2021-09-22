@@ -1,0 +1,23 @@
+.SearchBlock {
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    border: 1.5px solid var(--aside-block-border);
+    padding: 0 10px;
+
+    > * {
+        padding: 10px 0;
+        border-bottom: 1px solid var(--aside-block-border);
+        width: 100%;
+    }
+
+    > div:nth-last-child(1) {
+        border-bottom: none;
+    }
+
+    .select-search {
+        width: 190px;
+        height: 30px;
+    }
+}

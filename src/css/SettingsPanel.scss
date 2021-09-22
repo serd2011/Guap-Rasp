@@ -1,0 +1,173 @@
+.SettingsPanel {
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    backdrop-filter: none;
+    transition: filter 0.2s linear;
+
+    .background {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background-color: var(--settings-background-background);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s linear, visibility 0.2s linear;
+        pointer-events: all;
+    }
+
+    .wrapper {
+        position: absolute;
+        height: 100%;
+        overflow: hidden;
+        top: 0;
+        right: 0;
+        z-index: 1001;
+    }
+
+    .button-open {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        top: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        svg {
+            position: relative;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            fill: var(--settings-button-open);
+            pointer-events: all;
+            transition: all 0.3s;
+
+            &:hover {
+                @keyframes rotate {
+                    from {
+                        transform: rotate(0deg);
+                    }
+                    to {
+                        transform: rotate(360deg);
+                    }
+                }
+
+                animation: rotate 2s linear infinite;
+                fill: var(--settings-button-open-hover);
+            }
+        }
+    }
+
+    .panel {
+        position: relative;
+        height: 100%;
+        padding: 10px;
+        padding-top: 0;
+        background-color: var(--settings-background);
+        left: 100%;
+        transition: left 0.3s ease-in-out;
+        pointer-events: all;
+        min-width: 300px;
+        display: flex;
+        flex-direction: column;
+
+        .header {
+            height: 50px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            border-bottom: 1px solid var(--setting-delimiter);
+
+            svg {
+                position: relative;
+                width: 20px;
+                height: 20px;
+                top: 0;
+                left: 0;
+                cursor: pointer;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                transition: all 0.3s;
+                fill: var(--settings-button-close);
+
+                &:hover {
+                    transform: scale(1.1);
+                    fill: var(--settings-button-close-hover);
+                }
+            }
+
+            > span {
+                width: 100%;
+                text-align: center;
+                color: var(--settings-title);
+                font-size: 15px;
+            }
+        }
+
+        :last-child() {
+            border-bottom: none;
+        }
+
+        > .preloader {
+            top: 50px;
+        }
+
+        .setting {
+            padding: 10px 5px;
+            border-bottom: 1px solid var(--setting-delimiter);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            > span {
+                flex: 1;
+                padding-right: 10px;
+            }
+        }
+        label.setting > span {
+            cursor: pointer;
+
+            &:hover + .Switch > div::after {
+                transform: scale(1.1);
+            }
+        }
+
+        .inf-reload {
+            margin-top: auto;
+            display: block;
+            padding: 0;
+
+            > button {
+                width: 100%;
+                padding: 5px;
+                cursor: pointer;
+            }
+
+            > .but:hover {
+                transform: scale(1.01);
+            }
+        }
+    }
+
+    &.open {
+        backdrop-filter: blur(1px);
+
+        .background {
+            opacity: 0.5;
+            visibility: visible;
+        }
+
+        .panel {
+            left: 0;
+        }
+    }
+}
