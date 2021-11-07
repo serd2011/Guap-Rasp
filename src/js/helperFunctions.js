@@ -112,7 +112,7 @@ export async function requestTimeTable(id, isGroup) {
             timetable[lesson.ItemId].num = lesson.Less;
             timetable[lesson.ItemId].type = lesson.Type;
             timetable[lesson.ItemId].name = lesson.Disc;
-            timetable[lesson.ItemId].rooms = lesson.Rooms;
+            timetable[lesson.ItemId].rooms = lesson.Rooms || "";
             timetable[lesson.ItemId].build = { full: lesson.Build, short: config.build_short_names[lesson.Build] };
             timetable[lesson.ItemId].groupsIds = lesson.Groups.slice(1, -1).split("::").map(Number);
             timetable[lesson.ItemId].prepsIds = lesson.Preps.slice(1, -1).split("::").map(Number);
