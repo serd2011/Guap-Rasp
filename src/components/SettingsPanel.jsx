@@ -68,7 +68,7 @@ class SettingsPanel extends React.Component {
                     </div>
                     {config.settings.list.map(this.renderControl)}
                     < div className="inf-reload">
-                        <button className="but background-change" title="Удаляет всю сохраненную информацию (настройки и списки групп и преподавателей)" onClick={this.props.onDeleteAll}>Удалить все данные</button>
+                        <button className="but background-change" title="Удаляет всю сохраненную информацию (настройки и списки групп и преподавателей)" onClick={this.props.onDeleteAll} tabIndex="-1">Удалить все данные</button>
                     </div>
                 </div>
             </div>

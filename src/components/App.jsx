@@ -204,7 +204,7 @@ class App extends React.Component {
         return (<React.Fragment>
             <div className="header-background"></div>
             <div className="logo">
-                <a href={config.url.guap_main} target="_blank"><img src={imgLogo} /></a>
+                <a href={config.url.guap_main} target="_blank" tabIndex="-1"><img src={imgLogo} /></a>
             </div>
             <div className="title">{this.state.title}</div>
         </React.Fragment>)
