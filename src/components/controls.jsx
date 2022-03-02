@@ -79,6 +79,7 @@ export class Select extends React.PureComponent {
     }
 
     componentDidUpdate(prevProps) {
+        if (this.props.value != prevProps.value) this.state.selectedIndex = this.props.options.findIndex((element) => { return element.value == this.props.value });
         if (!this.props.hasSearch) return;
         if (this.props !== prevProps) {
             let newValueIndex = this.props.options.findIndex((element, index, array) => { return element.value == this.props.value });
