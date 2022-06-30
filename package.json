@@ -1,6 +1,6 @@
 {
   "name": "guap_rasp",
-  "version": "3.1",
+  "version": "3.2",
   "description": "Проект, направленный на упрощение просмотра и улучшение внешнего вида расписания при просмотре с ПК",
   "scripts": {
     "build": "webpack --config webpack/webpack.config.prod.js",
