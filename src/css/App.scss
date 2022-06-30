@@ -32,19 +32,10 @@
 	gap: 5px;
 	grid-template-columns: 1fr 4fr 1fr;
 	grid-template-rows: 50px 1fr;
-	grid-template-areas: "logo title null" "aside article article";
-	max-width: 1920px;
+	grid-template-areas: "logo title null" "aside article article";	
 	margin: auto;
 	padding-bottom: 5px;
-	height: max-content;
-
-	@media (max-height: 1080px) {
-		min-height: 100vh;
-	}
-
-	@media (min-height: 1080px) {
-		min-height: 1080px;
-	}
+	height: 100vh;
 
 	> .header-background {
 		left: 0;

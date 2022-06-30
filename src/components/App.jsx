@@ -28,27 +28,39 @@ class App extends React.Component {
         isLoadingInfo: true,
         isLoadingTimetable: false,
         isWeekUp: false,
-        settings: {},
-        initialInfo: {},
+        settings: {
+            changeSetting: this.changeSetting.bind(this),
+            list: Object.assign(config.settings.default)
+        },
+        initialInfo: {
+            CurrentWeek: 0,
+            IsAutumn: false,
+            IsWeekOdd: false,
+            IsWeekRed: false,
+            IsWeekUp: false,
+            Update: "1970-01-01T00:00:00",
+            Years: ""
+        },
         data: {
             timetable: {},
             additionalLessons: [],
         },
         additionalInfoId: null,
-        search: { id: null, isGroup: true }
+        search: { id: null, isGroup: true },
+        isInternetAvailable: window.navigator.onLine
     }
 
     constructor(props) {
         super(props);
 
+        this.reload = this.load.bind(this);
         this.module_loaded = this.module_loaded.bind(this);
         this.keyPressed = this.keyPressed.bind(this);
         this.internetAvailabilityChanged = this.internetAvailabilityChanged.bind(this);
-        this.initialDataLoaded = this.initialDataLoaded.bind(this);
         // Storage
         this.onDeleteAll = this.onDeleteAll.bind(this);
         // Settings
-        this.settingsLoaded = this.settingsLoaded.bind(this);
+        this.settingsChanged = this.settingsChanged.bind(this);
         this.changeSetting = this.changeSetting.bind(this);
         // App events
         this.onWeekChange = this.onWeekChange.bind(this);
@@ -57,46 +69,58 @@ class App extends React.Component {
 
         this.gridRef = React.createRef();
         this.asideRef = React.createRef();
-
-        //seting default state
-        this.state.isInternetAvailable = window.navigator.onLine;
-        this.state.settings = {
-            changeSetting: this.changeSetting,
-            list: Object.assign(config.settings.default)
-        };
-        this.state.initialInfo = {
-            CurrentWeek: 0,
-            IsAutumn: false,
-            IsWeekOdd: false,
-            IsWeekRed: false,
-            IsWeekUp: false,
-            Update: "1970-01-01T00:00:00",
-            Years: ""
-        };
-        //data loading
-        Storage.getSettings().then(this.settingsLoaded);
-        if (this.state.isInternetAvailable) helperFunctions.requestInitialData().then(this.initialDataLoaded);
     }
 
     componentDidMount() {
         window.addEventListener('online', this.internetAvailabilityChanged);
         if (!this.state.isInternetAvailable) return;
         this.gridRef.current.parentElement.setAttribute("data-theme", config.settings.default.theme);
-        Storage.subscribe("settings.changed", this.settingsLoaded);
+        Storage.subscribe("settings.changed", this.settingsChanged);
         document.addEventListener("keydown", this.keyPressed);
         setTimeout(this.module_loaded, config.main_preloader_timeout, "timeout");
+        this.load();
     }
 
     componentWillUnmount() {
         window.removeEventListener('online', this.internetAvailabilityChanged);
         if (!this.state.isInternetAvailable) return;
-        Storage.unSubscribe("settings.changed", this.settingsLoaded);
+        Storage.unSubscribe("settings.changed", this.settingsChanged);
         document.removeEventListener("keydown", this.keyPressed);
     }
 
     componentDidUpdate() {
         if (!this.state.isInternetAvailable) return;
         this.gridRef.current.parentElement.setAttribute("data-theme", this.state.settings.list.theme);
+    }
+
+    asyncSetState(arg) {
+        return new Promise((resolve) => this.setState(arg, resolve));
+    }
+
+    async load() {
+        let settings = await Storage.getSettings();
+        await this.settingsChanged(settings);
+        this.module_loaded("settings");
+        if (this.state.isInternetAvailable) {
+            let data = await helperFunctions.requestInitialData();
+            let updateDate = new Date(data.initialInfo.Update);
+            let newTitle = `Расписание занятий ${data.initialInfo.Years} учебного года от ${updateDate.getDate()} ${config.month_names_in_genitive[updateDate.getMonth()]}`;
+            await this.asyncSetState({
+                isLoadingInfo: false,
+                initialInfo: data.initialInfo,
+                isWeekUp: data.initialInfo.IsWeekUp,
+                info: {
+                    groups: data.groups,
+                    preps: data.preps
+                },
+                title: newTitle
+            });
+            if (this.state.settings.list["save-request"]) {
+                let stored = await Storage.getSavedState();
+                if ("request" in stored) await this.onSearch(stored.request.id, (stored.request.type == 1));
+                if ("additionalInfo" in stored) this.onLessonClick(stored.additionalInfo);
+            }
+        }
     }
 
     modules = { "settings": false, "timeout": false };
@@ -117,27 +141,6 @@ class App extends React.Component {
             document.location.reload();
     }
 
-    async initialDataLoaded(data) {
-        let updateDate = new Date(data.initialInfo.Update);
-        let newTitle = `Расписание занятий ${data.initialInfo.Years} учебного года от ${updateDate.getDate()} ${config.month_names_in_genitive[updateDate.getMonth()]}`;
-        this.setState({
-            isLoadingInfo: false,
-            initialInfo: data.initialInfo,
-            isWeekUp: data.initialInfo.IsWeekUp,
-            info: {
-                groups: data.groups,
-                preps: data.preps
-            },
-            title: newTitle
-        });
-        //this.module_loaded("info");
-        if (this.state.settings.list["save-request"]) {
-            let stored = await Storage.getSavedState();
-            if ("request" in stored) await this.onSearch(stored.request.id, (stored.request.type == 1));
-            if ("additionalInfo" in stored) this.onLessonClick(stored.additionalInfo);
-        }
-    }
-
     // Storage
     async onDeleteAll() {
         await Storage.clear();
@@ -146,17 +149,16 @@ class App extends React.Component {
 
     // Settings
 
-    settingsLoaded(data) {
-        this.setState((state) => ({
+    settingsChanged(newSettings) {
+        return this.asyncSetState((state) => ({
             settings: {
                 ...state.settings,
                 list: {
                     ...state.settings.list,
-                    ...data
+                    ...newSettings
                 }
             }
         }));
-        this.module_loaded("settings");
     }
 
     changeSetting(name, value) {
@@ -204,7 +206,7 @@ class App extends React.Component {
         return (<React.Fragment>
             <div className="header-background"></div>
             <div className="logo">
-                <a href={config.url.guap_main} target="_blank"><img src={imgLogo} /></a>
+                <a href={config.url.guap_main} target="_blank" tabIndex="-1"><img src={imgLogo} /></a>
             </div>
             <div className="title">{this.state.title}</div>
         </React.Fragment>)

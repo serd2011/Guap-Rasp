@@ -54,12 +54,15 @@ export class Select extends React.PureComponent {
     constructor(props) {
         super(props);
         this.onMouseDownElement = this.onMouseDownElement.bind(this);
-        this.onClickOutside = this.onClickOutside.bind(this);
         this.onWindowResize = this.onWindowResize.bind(this);
-        this.onFocusInput = this.onFocusInput.bind(this);
-        this.onChangeInput = this.onChangeInput.bind(this);
+        this.onClickOutside = this.onClickOutside.bind(this);
         this.onClickHead = this.onClickHead.bind(this);
+        this.onMouseDownElement = this.onMouseDownElement.bind(this);
+        this.onFocusInput = this.onFocusInput.bind(this);
+        this.onClose = this.onClose.bind(this);
+        this.onChangeInput = this.onChangeInput.bind(this);
         this.onKeyDownInput = this.onKeyDownInput.bind(this);
+        this.getIndexByLabel = this.getIndexByLabel.bind(this);
 
         this.inputRef = React.createRef();
         this.selectOptions = React.createRef();
@@ -76,6 +79,7 @@ export class Select extends React.PureComponent {
     }
 
     componentDidUpdate(prevProps) {
+        if (this.props.value != prevProps.value) this.state.selectedIndex = this.props.options.findIndex((element) => { return element.value == this.props.value });
         if (!this.props.hasSearch) return;
         if (this.props !== prevProps) {
             let newValueIndex = this.props.options.findIndex((element, index, array) => { return element.value == this.props.value });
@@ -199,7 +203,7 @@ export class Select extends React.PureComponent {
             )
         } else {
             return (
-                <div className={`select-search ${this.state.isActive ? "active" : ""}`} onFocus={this.onFocusInput}>
+                <div className={`select-search ${this.state.isActive ? "active" : ""}`} onFocus={this.onFocusInput} onBlur={this.onClose}>
                     <input type="text" autoComplete="off" ref={this.inputRef}
                         className={`${(this.getIndexByLabel(this.state.partialInput) !== -1) ? "valid" : ""}`}
                         value={this.state.partialInput}
