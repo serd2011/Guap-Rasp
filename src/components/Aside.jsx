@@ -126,7 +126,7 @@ class Aside extends React.Component {
             />
             {this.renderAdditionalBlock()}
             {this.props.isLoading && <Preloader />}
-            <span>Расписание получено с <a href={config.url.rasp_guap} target="_blank">rasp.guap</a></span>
+            <span>Расписание получено с <a href={config.url.rasp_guap} target="_blank">api.guap.ru</a></span>
         </aside >)
     }
 }

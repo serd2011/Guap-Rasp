@@ -15,7 +15,7 @@
     ],
     "url": {
         "guap_main": "https://new.guap.ru/",
-        "rasp_guap": "https://guap.ru/rasp/",
+        "rasp_guap": "https://api.guap.ru/rasp/custom",
         "info": {
             "initial": "https://api.guap.ru/rasp/custom/get-sem-info",
             "groups": "https://api.guap.ru/rasp/custom/get-sem-groups",
