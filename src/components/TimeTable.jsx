@@ -22,10 +22,10 @@ class TimeTable extends React.Component {
 
     renderLesson(lesson) {
         return (<div className="lesson" key={lesson.id} onClick={!this.context.list["timetable-as-table"] ? this.props.onLessonClick.bind(null, lesson.id) : undefined}>
-            <div className="time">{config.pairs_time[lesson.num]}</div>
+            <div className="time">{`${lesson.num} пара (${lesson.time.begin.substring(0, 5)}-${lesson.time.end.substring(0, 5)})`}</div>
             <div className="type">{lesson.type}</div>
             <div className="name">{lesson.name}</div>
-            <div className="classroom">{`${lesson.build[(this.context.list["short-builds"] ? "short" : "full")]} ${lesson.rooms}`}</div>
+            <div className="classroom">{`${lesson.rooms}`}</div>
         </div>)
     }
 
@@ -69,7 +69,7 @@ class TimeTable extends React.Component {
         for (let lessonId in this.props.info) {
             let lesson = this.props.info[lessonId];
             if (lesson.num > 6) needExtended = true;
-            if (lesson.week - 1 == this.props.isWeekUp) continue;
+            if ((lesson.week != 0) && (lesson.week % 2 != this.props.isWeekUp)) continue;
             timetable[lesson.day - 1][lesson.num - 1] = lesson;
         }
         for (let day in timetable) {

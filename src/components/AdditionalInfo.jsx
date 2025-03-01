@@ -35,12 +35,12 @@ class AdditionalInfo extends React.PureComponent {
         const info = this.props.info;
         return <div className="additional_inf">
             <div className="type">{info.type}</div>
-            <div className={`week ${info.week == 1 ? "up" : "down"}`}>▼</div>
+            {(info.week != 0) && <div className={`week ${(info.week % 2) ? "up" : "down"}`}>▼</div>}
             <div className="img">
                 <img src={imgLessons[info.id % imgLessons.length]} />
             </div>
             <div className="name">{info.name}</div>
-            <div className="time">{`${config.day_short_names[info.day]} ${config.pairs_time[info.num]}`}</div>
+            <div className="time">{`${config.day_short_names[info.day]} ${info.num} пара (${info.time.begin.substring(0, 5)}-${info.time.end.substring(0, 5)})`}</div>
             <div className="preps">
                 {this.renderPreps()}
             </div>
