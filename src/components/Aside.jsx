@@ -92,7 +92,6 @@ class Aside extends React.Component {
     renderAdditionalBlock() {
         let additionalInfo = (!this.props.additionalInfo) ? null : {
             ...this.props.additionalInfo,
-            build: this.props.additionalInfo.build[(this.context.list["short-builds"] ? "short" : "full")],
             groups: this.props.additionalInfo.groupsIds.map((groupId) => { return ({ id: groupId, name: this.props.info.groups[groupId] }); }),
             preps: this.props.additionalInfo.prepsIds.map((prepId) => {
                 return ({
@@ -126,7 +125,7 @@ class Aside extends React.Component {
             />
             {this.renderAdditionalBlock()}
             {this.props.isLoading && <Preloader />}
-            <span>Расписание получено с <a href={config.url.rasp_guap} target="_blank">rasp.guap</a></span>
+            <span>Расписание получено с <a href={config.url.rasp_guap} target="_blank">api.guap.ru</a></span>
         </aside >)
     }
 }

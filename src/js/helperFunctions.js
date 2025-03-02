@@ -8,9 +8,6 @@ import config from "config.json"
  * @typedef InitialData
  * @type {object}
  * @property {number} CurrentWeek
- * @property {boolean} IsAutumn
- * @property {boolean} IsWeekOdd
- * @property {boolean} IsWeekRed
  * @property {boolean} IsWeekUp
  * @property {string} Update
  * @property {string} Years
@@ -23,7 +20,12 @@ import config from "config.json"
  */
 export async function requestInitialData() {
     let response = await axios.get(config.url.info.initial);
-    let initialData = response.data;
+    let initialData = {
+        CurrentWeek: response.data.currentWeek,
+        IsWeekUp: (response.data.currentWeek % 2 != 0),
+        Update: response.data.dateRelease,
+        Years: response.data.years
+    };
     let lastUpdate = await Storage.getLastUpdate();
     let groupsList = {};
     let prepsList = {};
@@ -34,16 +36,16 @@ export async function requestInitialData() {
         let groupsData = groupsResponse.data;
         //Превращаем в список id => группа
         for (let i in groupsData) {
-            groupsList[groupsData[i].ItemId] = groupsData[i].Name;
+            groupsList[groupsData[i].aisId] = groupsData[i].title;
         }
         //Получаем список преподавателей
         let prepsResponse = await axios(config.url.info.preps);
         let prepsData = prepsResponse.data;
         //Превращаем в список id => {short => только имя, full => имя вместе с должностью}
         for (let i in prepsData) {
-            prepsList[prepsData[i].ItemId] = {
-                short: prepsData[i].Name.substring(0, prepsData[i].Name.indexOf("—") - 1),
-                full: prepsData[i].Name
+            prepsList[prepsData[i].aisId] = {
+                short: prepsData[i].fio,
+                full: prepsData[i].fio + "—" + prepsData[i].degree
             };
         }
         //Сохраняем            
@@ -66,9 +68,10 @@ export async function requestInitialData() {
  * @property {string} type
  * @property {string} name
  * @property {string} rooms
- * @property {{full: string, short: string}} build
+ * @property {string} build
  * @property {Array.<number>} groupsIds
  * @property {Array.<number>} prepsIds
+ * @property {{begin: string, end: string}} time
  */
 
 /**
@@ -89,33 +92,51 @@ export async function requestInitialData() {
  * @returns {Promise<{timetable:Object.<number,Lesson>,additionalLessons:Array.<AdditionalLesson>}>}
  */
 export async function requestTimeTable(id, isGroup) {
-    let requestUrl = config.url.timetable[(isGroup ? "group" : "prep")] + id;
-    let response = await axios(requestUrl);
+    let response = await axios.get(config.url.timetable, { params: { groupAisId: (isGroup ? id : 0), prepAisId: (isGroup ? 0 : id) } });
     let timetable = {};
     let additionalLessons = [];
-    for (let lesson of response.data) {
-        lesson.Groups = lesson.Groups || "::";
-        lesson.Preps = lesson.Preps || "::";
-        lesson.Build = lesson.Build || "Не опеределено";
-        if (lesson.Day == 0) {
-            additionalLessons.push({
-                id: lesson.ItemId,
-                type: lesson.Type,
-                name: lesson.Disc,
-                dept: lesson.Dept
-            });
+    let regRooms = [];
+
+    for (let roomIt of response.data.regRooms.options) {
+        regRooms[roomIt.value] = roomIt.inner.replace("&nbsp;", "\u00a0");
+    }
+
+    for (let daysIt of response.data.days) {
+        if ('day' in daysIt) {
+            for (let lessonsIt of daysIt.lessons) {
+                let allWeeks = [...(lessonsIt.week1 || []), ...(lessonsIt.week2 || []), ...(lessonsIt.weekAll || [])];
+                for (let lesson of allWeeks) {
+                    lesson.week = lesson.week || 0;
+                    lesson.groupsAisIds = lesson.groupsAisIds || [];
+                    lesson.prepsAisIds = lesson.prepsAisIds || [];
+                    lesson.roomsIds = lesson.roomsIds || [];
+                    timetable[lesson.id] = {
+                        id: lesson.id,
+                        week: lesson.week,
+                        day: daysIt.day,
+                        num: lessonsIt.less,
+                        type: lesson.type,
+                        name: lesson.dics,
+                        rooms: lesson.roomsIds.map((val) => regRooms[val]).join(", "),
+                        groupsIds: lesson.groupsAisIds || [],
+                        prepsIds: lesson.prepsAisIds || [],
+                        time: {
+                            begin: lessonsIt.begin,
+                            end: lessonsIt.end
+                        }
+                    };
+                }
+            }
         } else {
-            timetable[lesson.ItemId] = {};
-            timetable[lesson.ItemId].id = lesson.ItemId;
-            timetable[lesson.ItemId].week = lesson.Week;
-            timetable[lesson.ItemId].day = lesson.Day;
-            timetable[lesson.ItemId].num = lesson.Less;
-            timetable[lesson.ItemId].type = lesson.Type;
-            timetable[lesson.ItemId].name = lesson.Disc;
-            timetable[lesson.ItemId].rooms = lesson.Rooms || "";
-            timetable[lesson.ItemId].build = { full: lesson.Build, short: config.build_short_names[lesson.Build] };
-            timetable[lesson.ItemId].groupsIds = lesson.Groups.slice(1, -1).split("::").map(Number);
-            timetable[lesson.ItemId].prepsIds = lesson.Preps.slice(1, -1).split("::").map(Number);
+            for (let lessonsIt of daysIt.lessons[0].weekAll) {
+                lessonsIt.roomsIds = lessonsIt.roomsIds || [];
+                additionalLessons.push({
+                    id: lessonsIt.id,
+                    type: lessonsIt.type,
+                    name: lessonsIt.dics,
+                    dept: lessonsIt.roomsIds.map((val) => regRooms[val]).join(", ")
+                });
+            }
         }
     }
     return { timetable: timetable, additionalLessons: additionalLessons };

@@ -35,8 +35,6 @@ class App extends React.Component {
         initialInfo: {
             CurrentWeek: 0,
             IsAutumn: false,
-            IsWeekOdd: false,
-            IsWeekRed: false,
             IsWeekUp: false,
             Update: "1970-01-01T00:00:00",
             Years: ""
